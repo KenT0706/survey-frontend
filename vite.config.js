@@ -1,7 +1,7 @@
 // vite.config.js
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import { fileURLToPath, URL } from 'node:url'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import { fileURLToPath, URL } from 'node:url';
 
 export default defineConfig({
   plugins: [vue()],
@@ -14,7 +14,6 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: false,
     minify: 'terser',
-    chunkSizeWarningLimit: 1600,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -27,4 +26,4 @@ export default defineConfig({
   server: {
     port: 3000
   }
-})
+});

@@ -25,6 +25,6 @@ export default defineConfig({
   server: {
     port: 3000
   },
-  // Add this for Vercel deployment
-  base: './'
+  // Remove base: './' or set it to empty for Vercel
+  base: ''
 });

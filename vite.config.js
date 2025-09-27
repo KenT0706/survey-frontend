@@ -10,21 +10,21 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
-  server: {
-    port: 3000,
-    proxy: {
-      '/api': {
-        target: 'https://survey-backend-five.vercel.app',
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/api/, '/api')
-      },
-      '/auth': {
-        target: 'https://survey-backend-five.vercel.app',
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/auth/, '/auth')
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
+    minify: 'terser',
+    chunkSizeWarningLimit: 1600,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['vue', 'vue-router'],
+          axios: ['axios']
+        }
       }
     }
+  },
+  server: {
+    port: 3000
   }
 })

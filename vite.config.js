@@ -11,20 +11,10 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: false,
-    minify: 'terser',
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['vue', 'vue-router'],
-          axios: ['axios']
-        }
-      }
-    }
+    emptyOutDir: true,
+    sourcemap: false
   },
   server: {
     port: 3000
-  },
-  // Remove base: './' or set it to empty for Vercel
-  base: ''
+  }
 });

@@ -7,6 +7,7 @@ import ResultsDashboard from "../views/ResultsDashboard.vue";
 import AdminLogin from "../views/AdminLogin.vue";
 
 const routes = [
+  { path: "/", redirect: "/management" },
   { path: "/management", component: ManagementAssessment },
   { path: "/self-assessment", component: HRSelfAssessment },
   { path: "/user-survey", component: UserSurvey },

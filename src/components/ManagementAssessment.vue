@@ -1,6 +1,9 @@
 <!-- src/component/ManagementAssessment.vue -->
 <template>
   <div class="survey-container">
+    <!-- Copyright Notice Added Here -->
+    <p class="copyright">Copyright @ 2025 HR Training Consultancy</p>
+    
     <h1>HR Audit -- Management Assessment (BOD)</h1>
     <p class="instructions">
       Kindly complete and submit this Audit Assessment form on or before the due date.
@@ -21,14 +24,10 @@
       <!-- Rating Instructions -->
       <div class="rating-instructions">
         <h3>Audit Guidelines</h3>
-        <ol>
-          <li><strong>Column A</strong> = Rate the <em>Importance</em> of each of the services provided</li>
-          <li><strong>Column B</strong> = Rate the <em>Implementation Status</em> of each of the services provided</li>
-        </ol>
-        
+      
         <div class="rating-scales">
           <div class="scale">
-            <h4>Importance (Column A)</h4>
+            <h4>Importance = Rate the <em>Importance</em> of each of the services provided</h4>
             <ul>
               <li>1 = Unimportant</li>
               <li>2 = Somewhat Important</li>
@@ -38,7 +37,7 @@
             </ul>
           </div>
           <div class="scale">
-            <h4>Implementation (Column B)</h4>
+            <h4>Implementation = Rate the <em>Implementation Status</em> of each of the services provided</h4>
             <ul>
               <li>1 = None</li>
               <li>2 = Going to Implement / Partially implemented</li>
@@ -505,27 +504,22 @@ export default {
       }
     ];
 
-   
+    const submitForm = async () => {
+      try {
+        const payload = { ...formData };
+        const res = await axios.post("/api/management", payload);
 
-const submitForm = async () => {
-  try {
-
-      const payload = { ...formData };
-
-    const res = await axios.post("/api/management", payload);
-
-    if (res.data.success) {
-      alert("✅ Thank you for submitting your assessment!");
-      resetForm();
-    } else {
-      alert("⚠️ " + (res.data.message || "Something went wrong"));
+        if (res.data.success) {
+          alert("✅ Thank you for submitting your assessment!");
+          resetForm();
+        } else {
+          alert("⚠️ " + (res.data.message || "Something went wrong"));
+        }
+      } catch (err) {
+        console.error("Submission error:", err);
+        alert("❌ Failed to submit. Please try again.");
+      }
     }
-  } catch (err) {
-    console.error("Submission error:", err);
-    alert("❌ Failed to submit. Please try again.");
-  }
-}
-
 
     const resetForm = () => {
       if (confirm('Are you sure you want to reset the form? All your inputs will be lost.')) {
@@ -592,6 +586,16 @@ body {
   padding: 30px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
+}
+
+/* Copyright Notice Styles */
+.copyright {
+  color: blue;
+  font-style: italic;
+  text-align: center;
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  font-weight: bold;
 }
 
 h1, h2, h3, h4 {

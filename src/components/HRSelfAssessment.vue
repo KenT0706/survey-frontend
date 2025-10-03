@@ -1,6 +1,9 @@
 <!-- src/components/HRSelfAssessment.vue -->
 <template>
   <div class="survey-container">
+  <!-- Copyright Notice Added Here -->
+    <p class="copyright">Copyright @ 2025 HR Training Consultancy</p>
+    
     <h1>HR Audit - Self-Assessment (HR)</h1>
     <p class="instructions">
       Kindly complete and submit this Audit Assessment form on or before the due date.
@@ -34,17 +37,13 @@
         </div>
       </div>
 
-      <!-- Rating Instructions -->
+    <!-- Rating Instructions -->
       <div class="rating-instructions">
         <h3>Audit Guidelines</h3>
-        <ol>
-          <li><strong>Column A</strong> = Rate the <em>Importance</em> of each of the services provided</li>
-          <li><strong>Column B</strong> = Rate the <em>Implementation Status</em> of each of the services provided</li>
-        </ol>
-        
+      
         <div class="rating-scales">
           <div class="scale">
-            <h4>Importance (Column A)</h4>
+            <h4>Importance = Rate the <em>Importance</em> of each of the services provided</h4>
             <ul>
               <li>1 = Unimportant</li>
               <li>2 = Somewhat Important</li>
@@ -54,7 +53,7 @@
             </ul>
           </div>
           <div class="scale">
-            <h4>Implementation (Column B)</h4>
+            <h4>Implementation = Rate the <em>Implementation Status</em> of each of the services provided</h4>
             <ul>
               <li>1 = None</li>
               <li>2 = Going to Implement / Partially implemented</li>
@@ -609,6 +608,16 @@ const submitForm = async () => {
   }
 };
 </script>
+
+/* Copyright Notice Styles */
+.copyright {
+  color: blue;
+  font-style: italic;
+  text-align: center;
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  font-weight: bold;
+}
 
 <style scoped>
 /* Add any specific styles for the self-assessment form here */

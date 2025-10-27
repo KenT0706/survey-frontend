@@ -582,20 +582,21 @@ export default {
       console.log('Selected response:', resp); // Debug log
       this.selectedResponse = resp;
     },
-    async deleteResponse(id) {
-      if (!confirm("Are you sure you want to delete this response?")) return;
-      try {
-        const tab = this.tabs.find(t => t.key === this.activeTab);
-        const url = tab.key === "management" ? `${tab.url}/${id}` : `${tab.url}?id=${id}`;
-        await axios.delete(url, { headers: { Authorization: `Bearer ${this.token}` } });
-        this.responses = this.responses.filter(r => r._id !== id);
-        if (this.selectedResponse?._id === id) this.selectedResponse = null;
-        alert("Response deleted successfully.");
-      } catch (err) {
-        console.error("Error deleting response:", err);
-        alert(`Failed to delete response: ${err.response?.data?.message || err.message}`);
-      }
-    },
+ async deleteResponse(id) {
+  if (!confirm("Are you sure you want to delete this response?")) return;
+  try {
+    const tab = this.tabs.find(t => t.key === this.activeTab);
+    // Use query parameters for ALL surveys (consistent)
+    const url = `${tab.url}?id=${id}`;
+    await axios.delete(url, { headers: { Authorization: `Bearer ${this.token}` } });
+    this.responses = this.responses.filter(r => r._id !== id);
+    if (this.selectedResponse?._id === id) this.selectedResponse = null;
+    alert("Response deleted successfully.");
+  } catch (err) {
+    console.error("Error deleting response:", err);
+    alert(`Failed to delete response: ${err.response?.data?.message || err.message}`);
+  }
+},
     displayName(r) {
       if (!r) return "Anonymous";
       // Check all possible name fields

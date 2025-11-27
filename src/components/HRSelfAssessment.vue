@@ -372,154 +372,154 @@ export default {
     // Questions for each section
     const hr1Items = [
       {
-        text: "A. HR Strategic Initiatives and Relevancy",
+        text: "1. HR Strategic Initiatives and Relevancy",
         desc: "Activities related to the planning and execution of HR Goals and Strategies in supporting the organization and management to achieving organizational goals, sustainability and continuous growth. Includes HR special projects in promoting employer & employee relations, staff morale and employee's job satisfaction."
       },
       {
-        text: "B. HR Team Vs. Total Organization Headcount (Ratio)",
+        text: "2. HR Team Vs. Total Organization Headcount (Ratio)",
         desc: "Number of HR personnel against the Organization overall Headcount. Is the current ratio adequate to meet business / HR services demand. Includes effective utilization of HR personnel."
       },
       {
-        text: "C. HR Team Competencies",
+        text: "3. HR Team Competencies",
         desc: "HR dept personnel competencies in handling overall HR scope and functionality in supporting organizational goals, sustainability and growth. Effectiveness of HR Administration in supporting the organization / departmental HR operations & problem solving. Ability to consistently achieve deadlines, includes promptness in resolving issue and responding to queries."
       },
       {
-        text: "D. Human Resources Information Management / System (HRIS) and/or AI",
+        text: "4. Human Resources Information Management / System (HRIS) and/or AI",
         desc: "Encompasses activities in leveraging HRIS &/or AI, includes utilizing employees' data, analysis & metrics for Management and Functional decision-making, operational improvement and optimization, etc."
       },
       {
-        text: "E. Workplace Security, Safety and Health",
+        text: "5. Workplace Security, Safety and Health",
         desc: "Co-ordinate and delivering safety & security related activities in promoting security, safety & health awareness and compliant. Includes maintaining safety & security records, complying with authorities' enforcement and updates."
       },
       {
-        text: "F. Crisis Management",
+        text: "6. Crisis Management",
         desc: "Ability to handle crisis with minima operation's disruption, and shows resourcefulness whilst maintaining compliances."
       }
     ];
 
     const hr2Items = [
       {
-        text: "A. HR Policies & Employee Handbook and Relevancy",
+        text: "1. HR Policies & Employee Handbook and Relevancy",
         desc: "Includes the overall management and administration of the Human Resource Policies and Employee Handbook. The alignment of HR Policies with the Company's Objectives, Strategies, Culture and Core Values. To what extent do the HR policies support the Company in executing it's strategies, operations and competitiveness. Monitoring Policies compliances and enforcement. Review and updates of policies and employee handbook."
       },
       {
-        text: "B. Communication and Awareness",
+        text: "2. Communication and Awareness",
         desc: "To what extent do the HR policies being communicated to employees and sufficient awareness activities being conducted to facilitate compliant and enforcement."
       }
     ];
 
     const hr3Items = [
       {
-        text: "A. Workforce Forecasting & Planning",
+        text: "1. Workforce Forecasting & Planning",
         desc: "Activities involving the preparation and projection of Manpower Planning and Forecasting."
       },
       {
-        text: "B. External and Internal Sourcing",
+        text: "2. External and Internal Sourcing",
         desc: "Resourcefulness and creativeness in sourcing of candidates through various means. Indicate the existence of Employee Referral Scheme or Incentive as part of recruitment strategy."
       },
       {
-        text: "C. Selection Tools",
+        text: "3. Selection Tools",
         desc: "Indicate the existence of Competencies or Skills Matrix. Includes usage of Job Description and Behavioral or various assessment for recruitment, career path building and talent management selection purposes."
       },
       {
-        text: "D. Recruitment and Selection process",
+        text: "4. Recruitment and Selection process",
         desc: "Activities and Policies related to the preparation, approving, posting, and tracking requisitions to fill a position. Activities and Policies associated with identifying candidate pools, screening of candidates, interviewing, educating hiring managers, notifying applicants and determining the new hires compensation."
       },
       {
-        text: "E. Pre-selection Checks",
+        text: "5. Pre-selection Checks",
         desc: "Activities of reference or background checking shortlisted candidates prior to job offer."
       },
       {
-        text: "F. Recruitment Turn-around-Time",
+        text: "6. Recruitment Turn-around-Time",
         desc: "Monitoring and recording of Recruitment Turn-around-time. (Time-to-Hire)"
       },
       {
-        text: "G. Orienting New Hires / Onboarding",
+        text: "7. Orienting New Hires / Onboarding",
         desc: "Activities and Polices associated with orientation of new hires. Preparation & activities before and after the arrival of new hires."
       },
       {
-        text: "H. Career Development and Succession Planning",
+        text: "8. Career Development and Succession Planning",
         desc: "Existence of Policies or programs on the development and tracking of employee's Career Development Plan, Succession Planning program and Business Continuity Planning."
       },
       {
-        text: "I. Employee Headcount Reporting & Maintenance",
+        text: "9. Employee Headcount Reporting & Maintenance",
         desc: "Activities and Policies associated with maintaining and processing employee progress and movement such as promotions, transfers, employee personal updates, etc. Includes providing headcount information and updates to relevant parties."
       },
       {
-        text: "J. Employee Separations",
+        text: "10. Employee Separations",
         desc: "Activities and Policies related to exiting employees, including conducting exit interviews, etc."
       }
     ];
 
     const hr4Items = [
       {
-        text: "A. Employees Compensation and Benefits Management",
+        text: "1. Employees Compensation and Benefits Management",
         desc: "Activities involved with managing employee's compensation and benefits, includes revision and benchmarking. Activities associated with updating pay policies, determining internal and external competitiveness of pay, determining merit pay increases, and processing of corresponding documentations. Is pay structure being review consistently and compensation & benefits being compared with market rates."
       },
       {
-        text: "B. Employee's Welfare Plans and Programs",
+        text: "2. Employee's Welfare Plans and Programs",
         desc: "Services encompassing employee's welfare programs and activities, includes safety, health and spiritual wellness."
       },
       {
-        text: "C. Incentive-based Pay Programs",
+        text: "3. Incentive-based Pay Programs",
         desc: "Services related to the design and enhancement of incentive schemes and the corresponding administrative activities. Developing strategies and plans to retain the top talent."
       },
       {
-        text: "D. Payroll Management and Administration",
+        text: "4. Payroll Management and Administration",
         desc: "Policies and Checklist to ensure consistent Statutory compliances, accuracy and on-schedule Payroll processes. Incident of non-compliance, penalty and delayed payroll? Includes frequency of Payroll related complaints from employees and ability of HR staff in handling Payroll related queries and problem solving."
       },
       {
-        text: "E. Performance Management System",
+        text: "5. Performance Management System",
         desc: "Encompasses services around developing or enhancing performance management systems including developing performance targets, and the corresponding monitoring and administration of the programs and activities."
       },
       {
-        text: "F. Feedback and Performance Improvement",
+        text: "6. Feedback and Performance Improvement",
         desc: "Activities in providing mentoring and coaching programs. Providing PIP (performance improvement plan) and Counseling programs and activities. Administration and communication of the above programs."
       }
     ];
 
     const hr5Items = [
       {
-        text: "A. Learning & Development - Training Administration",
+        text: "1. Learning & Development - Training Administration",
         desc: "Activities associated with identifying organizational, departmental and individual gap analysis and training needs. Planning and managing training programs including designing, developing and delivering of training programs for current and future needs. Includes leadership development programs and employee's career development programs."
       },
       {
-        text: "B. Training Plan - Budget and Training Hours",
+        text: "2. Training Plan - Budget and Training Hours",
         desc: "Indicate existence of Annual Training Plan includes allocation of training budget and employee's targeted training hours, and activities around it."
       },
       {
-        text: "C. Training Evaluation and Effectiveness",
+        text: "3. Training Evaluation and Effectiveness",
         desc: "Evaluating effectiveness of training programs. Follow-ups and enhancement or revision of programs to ensure training objectives are achieved."
       },
       {
-        text: "D. Knowledge Management and Organizational Change",
+        text: "4. Knowledge Management and Organizational Change",
         desc: "Encompasses services around developing and maintaining feedback and knowledge management system and activities. Are they sufficient means and ways for employees to contribute their knowledge and skills for job satisfaction, self and career development, whilst contributing to the company's objectives achievement, growth and sustainability. Includes programs and activities in leading employees through organizational change and knowledge management."
       }
     ];
 
     const hr6Items = [
       {
-        text: "A. Business Unit Manager / HOD Relationship",
+        text: "1. Business Unit Manager / HOD Relationship",
         desc: "Encompasses all activities associated with understanding the needs and expectations of the business units. Includes time spent with managers to assess individual needs, one-on-one consultations, coaching, feedback management, etc."
       },
       {
-        text: "B. Employee Relations and Open Communication",
+        text: "2. Employee Relations and Open Communication",
         desc: "Activities such as Townhall or HR Dialogue, includes communicating with employees through various platform and mechanisms on the Company's programs, initiatives, etc., and to obtain employee's feedback on regular basis. Includes responding to employee's concerns and issues speedily."
       },
       {
-        text: "C. Workplace Programs",
+        text: "3. Workplace Programs",
         desc: "Includes all activities associated with recognizing employee performance and contributions in non-monetary ways. Delivering diversity-related programs including programs for work-life balance, team relationship enhancement, etc."
       },
       {
-        text: "D. Industrial Relations (IR)",
+        text: "4. Industrial Relations (IR)",
         desc: "The efficient and effective handling of employee's grievances and misconduct. Includes preventive measures against discrimination and harassment, etc. Prompt and effective problem solving and closure of IR issues with minimal risk and employment law compliant."
       },
       {
-        text: "E. IR Legal Compliance",
+        text: "5. IR Legal Compliance",
         desc: "The consistent tracking of changes in Employment Law and IR legal requirement. Includes reporting and communicating employment related legal requirements and latest updates to BOD / Management and HODs / Business Units."
       },
       {
-        text: "F. HR Team competencies in IR",
+        text: "6. HR Team competencies in IR",
         desc: "HR Team knowledge, skills and capabilities in handling IR matters efficiently and effectively. Includes providing HR and IR advisory on Employment Law and IR Legality compliant in managing employees and when handling employment dispute."
       }
     ];

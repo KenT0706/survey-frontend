@@ -378,126 +378,126 @@ export default {
     // Questions for each section
     const hr1Items = [
       {
-        text: "A. HR Management, Initiatives and Relevancy",
+        text: "1. HR Management, Initiatives and Relevancy",
         desc: "Activities related to the planning and execution of HR programs, initiatives and activities in supporting the organizational goals, sustainability and continuous growth. Effectiveness of HR Management & Administration in supporting the organization and departmental HR operations & problem solving, and preventive initiatives (not just fire-fighting). HR special projects in promoting employer & employee relations, staff morale and employee's job satisfaction."
       },
       {
-        text: "B. Human Resources Information Management / System (HRIS) and/or AI",
+        text: "2. Human Resources Information Management / System (HRIS) and/or AI",
         desc: "Encompasses activities in leveraging HRIS &/or AI, includes utilizing employees' data, analysis & metrics for Management and Functional decision-making, operational improvement and optimization, etc."
       },
       {
-        text: "C. Workplace Security, Safety and Health",
+        text: "3. Workplace Security, Safety and Health",
         desc: "Co-ordinate and delivering safety & security related activities in promoting security, safety & health awareness and compliant. Includes maintaining safety & security records, complying with authorities' enforcement and updates."
       },
       {
-        text: "D. Crisis Management",
+        text: "4. Crisis Management",
         desc: "Ability to handle crisis with minima operation's disruption, and shows resourcefulness whilst maintaining compliances."
       }
     ];
 
     const hr2Items = [
       {
-        text: "A. HR Policies & Employee Handbook and Relevancy",
+        text: "1. HR Policies & Employee Handbook and Relevancy",
         desc: "Includes the overall management and administration of the Human Resource Policies and Employee Handbook. To what extent do the HR policies support the Company in executing it's strategies, operations and competitiveness. Monitoring Policies compliances and enforcement. Review and updates of policies and employee handbook."
       },
       {
-        text: "B. Communication and Awareness",
+        text: "2. Communication and Awareness",
         desc: "To what extent do the HR policies being communicated to employees and sufficient awareness activities being conducted to facilitate compliant and enforcement."
       }
     ];
 
     const hr3Items = [
       {
-        text: "A. Workforce Forecasting & Planning",
+        text: "1. Workforce Forecasting & Planning",
         desc: "Activities involving the preparation and projection of Manpower Planning and Forecasting."
       },
       {
-        text: "B. External and Internal Sourcing",
+        text: "2. External and Internal Sourcing",
         desc: "Resourcefulness and creativeness in sourcing of candidates through various means."
       },
       {
-        text: "C. Recruitment and Selection process",
+        text: "3. Recruitment and Selection process",
         desc: "Activities and Policies related to the preparation, approving, posting, and tracking requisitions to fill a position. Activities and Policies associated with identifying candidate pools, screening of candidates, interviewing, educating hiring managers, notifying applicants and determining the new hires compensation."
       },
       {
-        text: "D. Pre-selection Checks",
+        text: "4. Pre-selection Checks",
         desc: "Activities of reference or background checking shortlisted candidates prior to job offer."
       },
       {
-        text: "E. Recruitment Turn-around-Time",
+        text: "5. Recruitment Turn-around-Time",
         desc: "Monitoring and recording of Recruitment Turn-around-time. (Time-to-Hire)"
       },
       {
-        text: "F. Orienting New Hires / Onboarding",
+        text: "6. Orienting New Hires / Onboarding",
         desc: "Activities and Polices associated with orientation of new hires. Preparation & activities before and after the arrival of new hires."
       },
       {
-        text: "G. Career Development and Succession Planning",
+        text: "7. Career Development and Succession Planning",
         desc: "Existence of Policies or programs on the development and tracking of employee's Career Development Plan, Succession Planning program and Business Continuity Planning."
       },
       {
-        text: "H. Employee Headcount Reporting & Maintenance",
+        text: "8. Employee Headcount Reporting & Maintenance",
         desc: "Activities and Policies associated with maintaining and processing employee progress and movement such as promotions, transfers, employee personal updates, etc. Includes providing headcount information and updates to relevant parties."
       }
     ];
 
     const hr4Items = [
       {
-        text: "A. Employees Compensation and Benefits Management",
+        text: "1. Employees Compensation and Benefits Management",
         desc: "Is pay structure being review consistently and compensation & benefits being compared with market rates. Includes determining internal and external competitiveness of pay and determining merit pay increases."
       },
       {
-        text: "B. Employee's Welfare Plans and Programs",
+        text: "2. Employee's Welfare Plans and Programs",
         desc: "Services encompassing employee's welfare programs and activities, includes safety, health and spiritual wellness."
       },
       {
-        text: "C. Incentive-based Pay Programs",
+        text: "3. Incentive-based Pay Programs",
         desc: "Services related to the design and enhancement of incentive schemes and the corresponding administrative activities. Developing strategies and plans to retain the top talent."
       },
       {
-        text: "D. Payroll Administration",
+        text: "4. Payroll Administration",
         desc: "Indicate existence of delayed payroll and/or inaccuracy of Payroll computation or process. Includes frequency of Payroll related complaints from employees and ability of HR staff in handling employee's Payroll related queries and problem solving."
       },
       {
-        text: "E. Performance Management System",
+        text: "5. Performance Management System",
         desc: "Encompasses services around developing or enhancing performance management systems including developing performance targets, and the corresponding monitoring and administration of the programs and activities."
       },
       {
-        text: "F. Feedback and Performance Improvement",
+        text: "6. Feedback and Performance Improvement",
         desc: "Activities in providing mentoring and coaching programs. Providing PIP (performance improvement plan) and Counseling programs and activities. Administration and communication of the above programs."
       }
     ];
 
     const hr5Items = [
       {
-        text: "A. Learning & Development - Training Administration",
+        text: "1. Learning & Development - Training Administration",
         desc: "Activities associated with identifying organizational, departmental and individual gap analysis and training needs. Existence of Training budget allocation and training hours. Planning and managing training programs including designing, developing and delivering of training programs for current and future needs. Includes leadership development programs and employee's career development programs."
       },
       {
-        text: "B. Training Evaluation and Effectiveness",
+        text: "2. Training Evaluation and Effectiveness",
         desc: "Evaluating effectiveness of training programs. Follow-ups and enhancement or revision of programs to ensure training objectives are achieved."
       },
       {
-        text: "C. Knowledge Management and Organizational Change",
+        text: "3. Knowledge Management and Organizational Change",
         desc: "Encompasses services around developing and maintaining feedback and knowledge management system and activities. Are they sufficient means and ways for employees to contribute their knowledge and skills for job satisfaction, self and career development, whilst contributing to the company's objectives achievement, growth and sustainability. Includes programs and activities in leading employees through organizational change and knowledge management."
       }
     ];
 
     const hr6Items = [
       {
-        text: "A. Business Unit Manager / HOD Relationship",
+        text: "1. Business Unit Manager / HOD Relationship",
         desc: "Encompasses all activities associated with understanding the needs and expectations of the business units. Includes time spent with managers to assess individual needs, one-on-one consultations, coaching, feedback management, etc."
       },
       {
-        text: "B. Employee Relations and Open Communication",
+        text: "2. Employee Relations and Open Communication",
         desc: "Activities such as Townhall or HR Dialogue, includes communicating with employees through various platform and mechanisms on the Company's programs, initiatives, etc., and to obtain employee's feedback on regular basis. Includes responding to employee's concerns and issues speedily."
       },
       {
-        text: "C. Workplace Programs",
+        text: "3. Workplace Programs",
         desc: "Includes all activities associated with recognizing employee performance and contributions in non-monetary ways. Delivering diversity-related programs including programs for work-life balance, team relationship enhancement, etc."
       },
       {
-        text: "D. Industrial Relations (IR)",
+        text: "4. Industrial Relations (IR)",
         desc: "The efficient and effective handling of employee's grievances and misconduct. Includes preventive measures against discrimination and harassment, etc. Prompt and effective problem solving and closure of IR issues with minimal risk and employment law compliant. Includes communicating employment related legal requirements and updates to HODs / Business Units."
       }
     ];

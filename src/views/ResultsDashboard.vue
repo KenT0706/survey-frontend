@@ -95,7 +95,7 @@
         </div>
 
         <!-- Spreadsheet Summary Section -->
-        <div v-if="responses.length" class="spreadsheet-section mt-8">
+        <div v-if="responses.length && activeTab !== 'quadrant'" class="spreadsheet-section mt-8">
           <h3>📋 {{ currentTabLabel }} Summary Spreadsheet</h3>
           <p class="text-sm text-gray-600 mb-4">Showing all {{ responses.length }} responses</p>
           
@@ -182,7 +182,7 @@
         </div>
 
         <!-- Statistics Section -->
-        <div v-if="responses.length" class="statistics-section mt-8">
+        <div v-if="responses.length && activeTab !== 'quadrant'" class="statistics-section mt-8">
           <h3>📊 Response Statistics</h3>
           <p class="text-sm text-gray-600 mb-4">Breakdown of ratings for each question</p>
 
@@ -371,6 +371,250 @@
             </div>
           </div>
         </div>
+
+    <!-- Quadrant Matrix Section -->
+<div v-if="responses.length && activeTab !== 'quadrant'" class="quadrant-section mt-8">
+  <h3>🎯 Importance vs Implementation Matrix</h3>
+  <p class="text-sm text-gray-600 mb-6">
+    Classification of HR items based on assessment data
+  </p>
+  
+  <!-- Quadrant Cards - COMPLETELY SEPARATE CONTAINER -->
+  <div class="quadrant-cards-container mb-8">
+    <div class="matrix-grid">
+      <!-- Q1: Fix & Improve (High Importance, Low Implementation) -->
+      <div class="quadrant-card quadrant-1">
+        <div class="quadrant-header">
+          <h4>Q1: Fix & Improve</h4>
+          <span class="quadrant-desc">High Importance, Low Implementation</span>
+        </div>
+        <div class="quadrant-content">
+          <div v-for="hrCode in getQuadrantItems('q1')" :key="hrCode" class="hr-item">
+            {{ hrCode }}
+            <span class="item-count">({{ getItemCount(hrCode) }})</span>
+          </div>
+          <div v-if="getQuadrantItems('q1').length === 0" class="no-items">
+            No items
+          </div>
+        </div>
+      </div>
+      
+      <!-- Q2: Maintain & Sustain (High Importance, High Implementation) -->
+      <div class="quadrant-card quadrant-2">
+        <div class="quadrant-header">
+          <h4>Q2: Maintain & Sustain</h4>
+          <span class="quadrant-desc">High Importance, High Implementation</span>
+        </div>
+        <div class="quadrant-content">
+          <div v-for="hrCode in getQuadrantItems('q2')" :key="hrCode" class="hr-item">
+            {{ hrCode }}
+            <span class="item-count">({{ getItemCount(hrCode) }})</span>
+          </div>
+          <div v-if="getQuadrantItems('q2').length === 0" class="no-items">
+            No items
+          </div>
+        </div>
+      </div>
+      
+      <!-- Q3: Leave Alone (Low Importance, Low Implementation) -->
+      <div class="quadrant-card quadrant-3">
+        <div class="quadrant-header">
+          <h4>Q3: Leave Alone</h4>
+          <span class="quadrant-desc">Low Importance, Low Implementation</span>
+        </div>
+        <div class="quadrant-content">
+          <div v-for="hrCode in getQuadrantItems('q3')" :key="hrCode" class="hr-item">
+            {{ hrCode }}
+            <span class="item-count">({{ getItemCount(hrCode) }})</span>
+          </div>
+          <div v-if="getQuadrantItems('q3').length === 0" class="no-items">
+            No items
+          </div>
+        </div>
+      </div>
+      
+      <!-- Q4: Review to Maintain or Abolish (Low Importance, High Implementation) -->
+      <div class="quadrant-card quadrant-4">
+        <div class="quadrant-header">
+          <h4>Q4: Review to Maintain or Abolish</h4>
+          <span class="quadrant-desc">Low Importance, High Implementation</span>
+        </div>
+        <div class="quadrant-content">
+          <div v-for="hrCode in getQuadrantItems('q4')" :key="hrCode" class="hr-item">
+            {{ hrCode }}
+            <span class="item-count">({{ getItemCount(hrCode) }})</span>
+          </div>
+          <div v-if="getQuadrantItems('q4').length === 0" class="no-items">
+            No items
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Quadrant Legend -->
+    <div class="quadrant-legend">
+      <div class="legend-axis">
+        <span class="axis-label low">Low Implementation</span>
+        <span class="axis-label high">High Implementation</span>
+      </div>
+      <div class="legend-axis vertical">
+        <span class="axis-label high">High Importance</span>
+        <span class="axis-label low">Low Importance</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Detailed Breakdown - COMPLETELY SEPARATE CONTAINER -->
+  <div class="breakdown-container">
+    <h4>📋 Detailed Quadrant Breakdown</h4>
+    <div class="breakdown-table">
+      <table>
+        <thead>
+          <tr>
+            <th>HR Item</th>
+            <th>Final Quadrant</th>
+            <th>Q1 Count</th>
+            <th>Q2 Count</th>
+            <th>Q3 Count</th>
+            <th>Q4 Count</th>
+            <th>Total Assessments</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="hrCode in getAllHRItems()" :key="hrCode">
+            <td class="font-medium">{{ hrCode }}</td>
+            <td :class="`quadrant-${getFinalQuadrant(hrCode)}`">
+              {{ getQuadrantName(getFinalQuadrant(hrCode)) }}
+            </td>
+            <td>{{ quadrantData[hrCode]?.q1 || 0 }}</td>
+            <td>{{ quadrantData[hrCode]?.q2 || 0 }}</td>
+            <td>{{ quadrantData[hrCode]?.q3 || 0 }}</td>
+            <td>{{ quadrantData[hrCode]?.q4 || 0 }}</td>
+            <td class="font-medium">
+              {{ getTotalAssessments(hrCode) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Combined Quadrant Analysis -->
+<div v-if="activeTab === 'quadrant' && responses.length" class="quadrant-analysis-section">
+  <h3>🎯 Combined Quadrant Analysis</h3>
+  <p class="text-sm text-gray-600 mb-6">
+    Combined analysis across all survey types
+  </p>
+  
+  <!-- Quadrant Cards - COMPLETELY SEPARATE CONTAINER -->
+  <div class="quadrant-cards-container mb-8">
+    <div class="matrix-grid">
+      <!-- Q1: Fix & Improve -->
+      <div class="quadrant-card quadrant-1">
+        <div class="quadrant-header">
+          <h4>Q1: Fix & Improve</h4>
+          <span class="quadrant-desc">High Importance, Low Implementation</span>
+        </div>
+        <div class="quadrant-content">
+          <div v-for="hrCode in getCombinedQuadrantItems('q1')" :key="hrCode" class="hr-item">
+            {{ hrCode }}
+            <span class="item-count">({{ getCombinedItemCount(hrCode) }})</span>
+          </div>
+          <div v-if="getCombinedQuadrantItems('q1').length === 0" class="no-items">
+            No items
+          </div>
+        </div>
+      </div>
+      
+      <!-- Q2: Maintain & Sustain -->
+      <div class="quadrant-card quadrant-2">
+        <div class="quadrant-header">
+          <h4>Q2: Maintain & Sustain</h4>
+          <span class="quadrant-desc">High Importance, High Implementation</span>
+        </div>
+        <div class="quadrant-content">
+          <div v-for="hrCode in getCombinedQuadrantItems('q2')" :key="hrCode" class="hr-item">
+            {{ hrCode }}
+            <span class="item-count">({{ getCombinedItemCount(hrCode) }})</span>
+          </div>
+          <div v-if="getCombinedQuadrantItems('q2').length === 0" class="no-items">
+            No items
+          </div>
+        </div>
+      </div>
+      
+      <!-- Q3: Leave Alone -->
+      <div class="quadrant-card quadrant-3">
+        <div class="quadrant-header">
+          <h4>Q3: Leave Alone</h4>
+          <span class="quadrant-desc">Low Importance, Low Implementation</span>
+        </div>
+        <div class="quadrant-content">
+          <div v-for="hrCode in getCombinedQuadrantItems('q3')" :key="hrCode" class="hr-item">
+            {{ hrCode }}
+            <span class="item-count">({{ getCombinedItemCount(hrCode) }})</span>
+          </div>
+          <div v-if="getCombinedQuadrantItems('q3').length === 0" class="no-items">
+            No items
+          </div>
+        </div>
+      </div>
+      
+      <!-- Q4: Review to Maintain or Abolish -->
+      <div class="quadrant-card quadrant-4">
+        <div class="quadrant-header">
+          <h4>Q4: Review to Maintain or Abolish</h4>
+          <span class="quadrant-desc">Low Importance, High Implementation</span>
+        </div>
+        <div class="quadrant-content">
+          <div v-for="hrCode in getCombinedQuadrantItems('q4')" :key="hrCode" class="hr-item">
+            {{ hrCode }}
+            <span class="item-count">({{ getCombinedItemCount(hrCode) }})</span>
+          </div>
+          <div v-if="getCombinedQuadrantItems('q4').length === 0" class="no-items">
+            No items
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Combined Breakdown - COMPLETELY SEPARATE CONTAINER -->
+  <div class="breakdown-container">
+    <h4>📋 Combined Quadrant Breakdown</h4>
+    <div class="breakdown-table">
+      <table>
+        <thead>
+          <tr>
+            <th>HR Item</th>
+            <th>Final Quadrant</th>
+            <th>Q1 Count</th>
+            <th>Q2 Count</th>
+            <th>Q3 Count</th>
+            <th>Q4 Count</th>
+            <th>Total Assessments</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="hrCode in getAllCombinedHRItems()" :key="hrCode">
+            <td class="font-medium">{{ hrCode }}</td>
+            <td :class="`quadrant-${getCombinedFinalQuadrant(hrCode)}`">
+              {{ getQuadrantName(getCombinedFinalQuadrant(hrCode)) }}
+            </td>
+            <td>{{ combinedQuadrantData[hrCode]?.q1 || 0 }}</td>
+            <td>{{ combinedQuadrantData[hrCode]?.q2 || 0 }}</td>
+            <td>{{ combinedQuadrantData[hrCode]?.q3 || 0 }}</td>
+            <td>{{ combinedQuadrantData[hrCode]?.q4 || 0 }}</td>
+            <td class="font-medium">
+              {{ getCombinedTotalAssessments(hrCode) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
       </div>
     </div>
   </div>
@@ -503,13 +747,21 @@ export default {
             { text: "HR6.3 Workplace Programs" },
             { text: "HR6.4 Industrial Relations" }
           ]
+        },
+        { 
+          key: "quadrant", 
+          label: "Quadrant Analysis", 
+          url: "/api/all-responses",
+          sections: [],
+          questions: []
         }
       ],
       activeTab: "management",
       activeStatsSection: "hr1",
       responses: [],
       selectedResponse: null,
-      fetchError: null
+      fetchError: null,
+      allResponses: [] // For combined quadrant analysis
     };
   },
   computed: {
@@ -549,6 +801,13 @@ export default {
       if (!this.showDepartmentColumn) headers--;
       if (!this.showDateJoinedColumn) headers--;
       return headers;
+    },
+    // Quadrant Analysis Computed Properties
+    quadrantData() {
+      return this.calculateQuadrantData(this.responses);
+    },
+    combinedQuadrantData() {
+      return this.calculateQuadrantData(this.allResponses);
     }
   },
   methods: {
@@ -556,62 +815,86 @@ export default {
       this.activeTab = key;
       this.activeStatsSection = "hr1";
       this.selectedResponse = null;
-      this.fetchResponses();
+      if (key === 'quadrant') {
+        this.fetchAllResponses();
+      } else {
+        this.fetchResponses();
+      }
     },
     async fetchResponses() {
       this.fetchError = null;
       try {
         const tab = this.tabs.find(t => t.key === this.activeTab);
         const res = await axios.get(tab.url, { headers: { Authorization: `Bearer ${this.token}` } });
-        console.log('Fetched responses:', res.data); // Debug log
+        console.log('Fetched responses:', res.data);
         this.responses = res.data;
       } catch (err) {
         console.error("Error fetching responses:", err);
-        if (err.response) {
-          this.fetchError = `Error ${err.response.status}: ${err.response.data.message || err.response.data.error || "Unknown error"}`;
-          if (err.response.status === 401) {
-            localStorage.removeItem("token");
-            this.$router.push("/admin-login");
-          }
-        } else {
-          this.fetchError = `Network or server error: ${err.message}`;
+        this.handleFetchError(err);
+      }
+    },
+    async fetchAllResponses() {
+      this.fetchError = null;
+      try {
+        // Fetch all survey types for combined analysis
+        const [managementRes, hrRes, surveyRes] = await Promise.all([
+          axios.get("/api/management", { headers: { Authorization: `Bearer ${this.token}` } }),
+          axios.get("/api/hr-self-assessment", { headers: { Authorization: `Bearer ${this.token}` } }),
+          axios.get("/api/user-survey", { headers: { Authorization: `Bearer ${this.token}` } })
+        ]);
+        
+        this.allResponses = [
+          ...managementRes.data,
+          ...hrRes.data,
+          ...surveyRes.data
+        ];
+        this.responses = this.allResponses; // Set current responses to all for display
+      } catch (err) {
+        console.error("Error fetching all responses:", err);
+        this.handleFetchError(err);
+      }
+    },
+    handleFetchError(err) {
+      if (err.response) {
+        this.fetchError = `Error ${err.response.status}: ${err.response.data.message || err.response.data.error || "Unknown error"}`;
+        if (err.response.status === 401) {
+          localStorage.removeItem("token");
+          this.$router.push("/admin-login");
         }
+      } else {
+        this.fetchError = `Network or server error: ${err.message}`;
       }
     },
     selectResponse(resp) {
-      console.log('Selected response:', resp); // Debug log
+      console.log('Selected response:', resp);
       this.selectedResponse = resp;
     },
- async deleteResponse(id) {
-  if (!confirm("Are you sure you want to delete this response?")) return;
-  try {
-    const tab = this.tabs.find(t => t.key === this.activeTab);
-    // Use query parameters for ALL surveys (consistent)
-    const url = `${tab.url}?id=${id}`;
-    await axios.delete(url, { headers: { Authorization: `Bearer ${this.token}` } });
-    this.responses = this.responses.filter(r => r._id !== id);
-    if (this.selectedResponse?._id === id) this.selectedResponse = null;
-    alert("Response deleted successfully.");
-  } catch (err) {
-    console.error("Error deleting response:", err);
-    alert(`Failed to delete response: ${err.response?.data?.message || err.message}`);
-  }
-},
+    async deleteResponse(id) {
+      if (!confirm("Are you sure you want to delete this response?")) return;
+      try {
+        const tab = this.tabs.find(t => t.key === this.activeTab);
+        const url = `${tab.url}?id=${id}`;
+        await axios.delete(url, { headers: { Authorization: `Bearer ${this.token}` } });
+        this.responses = this.responses.filter(r => r._id !== id);
+        if (this.selectedResponse?._id === id) this.selectedResponse = null;
+        alert("Response deleted successfully.");
+      } catch (err) {
+        console.error("Error deleting response:", err);
+        alert(`Failed to delete response: ${err.response?.data?.message || err.message}`);
+      }
+    },
     displayName(r) {
       if (!r) return "Anonymous";
-      // Check all possible name fields
       return r.name || r.managerName || r.assessorName || "Anonymous";
     },
     getAssessmentDate(r) {
       if (!r) return null;
-      // Check all possible date fields
       if (r.assessmentDate) return new Date(r.assessmentDate).toLocaleDateString();
       if (r.submissionDate) return new Date(r.submissionDate).toLocaleDateString();
       if (r.createdAt) return new Date(r.createdAt).toLocaleDateString();
       return null;
     },
     getSectionLength(section) {
-      // Return the expected number of items for each section
       const sectionLengths = {
         hr1: this.activeTab === 'survey' ? 4 : 6,
         hr2: 2,
@@ -654,13 +937,11 @@ export default {
         if (!sectionData) return;
         
         if (questionIndex !== null) {
-          // Count for specific question
           const item = sectionData[questionIndex];
           if (item && item[type] === ratingStr) {
             total++;
           }
         } else {
-          // Count for entire section
           sectionData.forEach(item => {
             if (item && item[type] === ratingStr) {
               total++;
@@ -765,38 +1046,32 @@ export default {
     exportToCSV() {
       const headers = [];
       
-      // Basic headers
       headers.push('Name');
       if (this.showPositionColumn) headers.push('Position');
       if (this.showDepartmentColumn) headers.push('Department');
       if (this.showDateJoinedColumn) headers.push('Date Joined');
       headers.push('Assessment Date');
       
-      // Question headers
       this.currentQuestions.forEach((question, index) => {
         headers.push(`${question.text} - Importance`);
         headers.push(`${question.text} - Implementation`);
       });
       
-      // Open-ended headers
       if (this.showObstaclesColumn) headers.push('Obstacles');
       if (this.showSuggestionsColumn) headers.push('Suggestions');
       if (this.showStrengthsColumn) headers.push('Strengths & Weaknesses');
       
       const csvData = [headers];
       
-      // Add rows
       this.responses.forEach(response => {
         const row = [];
         
-        // Basic info
         row.push(this.displayName(response));
         if (this.showPositionColumn) row.push(response.position || '');
         if (this.showDepartmentColumn) row.push(response.department || '');
         if (this.showDateJoinedColumn) row.push(response.dateJoined || '');
         row.push(this.getAssessmentDate(response));
         
-        // Ratings
         this.currentSections.forEach(section => {
           const sectionData = response[section] || [];
           if (sectionData.length > 0) {
@@ -805,14 +1080,12 @@ export default {
               row.push(item.implementation || 'NA');
             });
           } else {
-            // Fill with NA for missing sections
             for (let i = 0; i < this.getSectionLength(section); i++) {
               row.push('NA', 'NA');
             }
           }
         });
         
-        // Open-ended
         if (this.showObstaclesColumn) row.push(response.obstacles || '');
         if (this.showSuggestionsColumn) row.push(response.suggestions || '');
         if (this.showStrengthsColumn) row.push(response.strengthsWeaknesses || '');
@@ -820,12 +1093,10 @@ export default {
         csvData.push(row);
       });
       
-      // Convert to CSV string
       const csvContent = csvData.map(row => 
         row.map(field => `"${String(field).replace(/"/g, '""')}"`).join(',')
       ).join('\n');
       
-      // Download
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement('a');
       const url = URL.createObjectURL(blob);
@@ -835,8 +1106,136 @@ export default {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+    },
+
+    // Quadrant Analysis Methods
+    calculateQuadrantData(responses) {
+      const quadrantItems = {};
+      
+      responses.forEach(response => {
+        ['hr1', 'hr2', 'hr3', 'hr4', 'hr5', 'hr6'].forEach(section => {
+          const sectionData = response[section];
+          if (sectionData) {
+            sectionData.forEach((item, index) => {
+              const hrCode = `${section.toUpperCase()}${index + 1}`;
+              
+              if (!quadrantItems[hrCode]) {
+                quadrantItems[hrCode] = { q1: 0, q2: 0, q3: 0, q4: 0 };
+              }
+              
+              if (item.importance && item.implementation && 
+                  item.importance !== 'NA' && item.implementation !== 'NA') {
+                
+                const importance = parseInt(item.importance);
+                const implementation = parseInt(item.implementation);
+                
+                if (importance >= 3 && implementation <= 2) {
+                  quadrantItems[hrCode].q1++;
+                } else if (importance >= 3 && implementation >= 3) {
+                  quadrantItems[hrCode].q2++;
+                } else if (importance <= 2 && implementation <= 2) {
+                  quadrantItems[hrCode].q3++;
+                } else if (importance <= 2 && implementation >= 3) {
+                  quadrantItems[hrCode].q4++;
+                }
+              }
+            });
+          }
+        });
+      });
+      
+      return quadrantItems;
+    },
+
+    getFinalQuadrant(hrCode) {
+      const counts = this.quadrantData[hrCode];
+      if (!counts) return null;
+      
+      const maxCount = Math.max(counts.q1, counts.q2, counts.q3, counts.q4);
+      if (maxCount === 0) return null;
+      
+      if (counts.q1 === maxCount) return 'q1';
+      if (counts.q2 === maxCount) return 'q2';
+      if (counts.q3 === maxCount) return 'q3';
+      return 'q4';
+    },
+
+    getCombinedFinalQuadrant(hrCode) {
+      const counts = this.combinedQuadrantData[hrCode];
+      if (!counts) return null;
+      
+      const maxCount = Math.max(counts.q1, counts.q2, counts.q3, counts.q4);
+      if (maxCount === 0) return null;
+      
+      if (counts.q1 === maxCount) return 'q1';
+      if (counts.q2 === maxCount) return 'q2';
+      if (counts.q3 === maxCount) return 'q3';
+      return 'q4';
+    },
+
+    getQuadrantName(quadrant) {
+      const names = {
+        q1: 'Fix & Improve',
+        q2: 'Maintain & Sustain', 
+        q3: 'Leave Alone / No Action Required',
+        q4: 'Review to Maintain or Abolish'
+      };
+      return names[quadrant] || 'Unknown';
+    },
+
+    getQuadrantItems(quadrant) {
+      const items = [];
+      for (const hrCode in this.quadrantData) {
+        if (this.getFinalQuadrant(hrCode) === quadrant) {
+          items.push(hrCode);
+        }
+      }
+      return items.sort();
+    },
+
+    getCombinedQuadrantItems(quadrant) {
+      const items = [];
+      for (const hrCode in this.combinedQuadrantData) {
+        if (this.getCombinedFinalQuadrant(hrCode) === quadrant) {
+          items.push(hrCode);
+        }
+      }
+      return items.sort();
+    },
+
+    getItemCount(hrCode) {
+      const counts = this.quadrantData[hrCode];
+      if (!counts) return 0;
+      return counts.q1 + counts.q2 + counts.q3 + counts.q4;
+    },
+
+    getCombinedItemCount(hrCode) {
+      const counts = this.combinedQuadrantData[hrCode];
+      if (!counts) return 0;
+      return counts.q1 + counts.q2 + counts.q3 + counts.q4;
+    },
+
+    getAllHRItems() {
+      return Object.keys(this.quadrantData).sort();
+    },
+
+    getAllCombinedHRItems() {
+      return Object.keys(this.combinedQuadrantData).sort();
+    },
+
+    getTotalAssessments(hrCode) {
+      const counts = this.quadrantData[hrCode];
+      if (!counts) return 0;
+      return counts.q1 + counts.q2 + counts.q3 + counts.q4;
+    },
+
+    getCombinedTotalAssessments(hrCode) {
+      const counts = this.combinedQuadrantData[hrCode];
+      if (!counts) return 0;
+      return counts.q1 + counts.q2 + counts.q3 + counts.q4;
     }
   },
+  
   mounted() {
     if (this.token) this.fetchResponses();
   }
@@ -856,6 +1255,7 @@ export default {
   margin-bottom: 20px;
   border-bottom: 1px solid #e5e7eb;
   padding-bottom: 10px;
+  flex-wrap: wrap;
 }
 
 .tabs button {
@@ -1392,48 +1792,366 @@ export default {
   border: 1px solid #e5e7eb;
 }
 
-.error {
+/* Quadrant Section Styles - COMPLETELY SEPARATED */
+.quadrant-section, .quadrant-analysis-section {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 25px;
+  margin-top: 30px;
+}
+
+/* Quadrant Cards Container - SEPARATE from table */
+.quadrant-cards-container {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+/* Matrix Grid - Fixed layout */
+.matrix-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 20px;
+  min-height: 350px;
+  margin-bottom: 20px;
+}
+
+/* Quadrant Cards */
+.quadrant-card {
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.quadrant-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.quadrant-header {
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.quadrant-header h4 {
+  margin: 0 0 6px 0;
+  font-size: 1.1rem;
+  color: #1f2937;
+}
+
+.quadrant-desc {
+  font-size: 0.85rem;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.quadrant-content {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 250px;
+}
+
+.hr-item {
+  padding: 8px 12px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.hr-item:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.item-count {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: normal;
+  background: #f3f4f6;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.no-items {
+  text-align: center;
+  color: #9ca3af;
+  font-style: italic;
+  padding: 30px 20px;
+  background: #f9fafb;
+  border-radius: 6px;
+  border: 1px dashed #d1d5db;
+}
+
+/* Quadrant-specific styles */
+.quadrant-1 {
+  border-color: #dc2626;
+  background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+}
+
+.quadrant-1 .quadrant-header h4 {
+  color: #dc2626;
+}
+
+.quadrant-2 {
+  border-color: #059669;
+  background: linear-gradient(135deg, #f0fdf4 0%, #a7f3d0 100%);
+}
+
+.quadrant-2 .quadrant-header h4 {
+  color: #059669;
+}
+
+.quadrant-3 {
+  border-color: #d97706;
+  background: linear-gradient(135deg, #fffbeb 0%, #fed7aa 100%);
+}
+
+.quadrant-3 .quadrant-header h4 {
+  color: #d97706;
+}
+
+.quadrant-4 {
+  border-color: #7c3aed;
+  background: linear-gradient(135deg, #faf5ff 0%, #ddd6fe 100%);
+}
+
+.quadrant-4 .quadrant-header h4 {
+  color: #7c3aed;
+}
+
+/* Quadrant Legend */
+.quadrant-legend {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  position: relative;
+  padding-top: 15px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.legend-axis {
+  display: flex;
+  justify-content: space-between;
+  width: 48%;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.legend-axis.vertical {
+  position: absolute;
+  right: 0;
+  top: -30px;
+  width: 200px;
+  transform: rotate(-90deg);
+  transform-origin: right top;
+}
+
+.axis-label {
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+}
+
+.axis-label.high {
+  color: #059669;
+  background: #f0fdf4;
+  border-color: #a7f3d0;
+}
+
+.axis-label.low {
   color: #dc2626;
   background: #fef2f2;
-  padding: 12px;
+  border-color: #fecaca;
+}
+
+/* Breakdown Container - COMPLETELY SEPARATE from cards */
+.breakdown-container {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 25px;
+  margin-top: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.breakdown-container h4 {
+  margin-bottom: 15px;
+  color: #374151;
+}
+
+.breakdown-table {
+  overflow-x: auto;
+  border: 1px solid #e5e7eb;
   border-radius: 6px;
-  border: 1px solid #fecaca;
+  background: white;
+  position: relative;
+  z-index: 2;
+}
+
+.breakdown-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  position: relative;
+  z-index: 2;
+}
+
+.breakdown-table th,
+.breakdown-table td {
+  border: 1px solid #e5e7eb;
+  padding: 10px 12px;
+  text-align: left;
+  position: relative;
+  z-index: 2;
+}
+
+.breakdown-table th {
+  background: #1e40af;
+  color: white;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.breakdown-table tr:nth-child(even) {
+  background: #f9fafb;
+}
+
+.breakdown-table tr:hover {
+  background: #f0f9ff;
+}
+
+/* Quadrant cell colors for table */
+.quadrant-q1 {
+  background: #fef2f2 !important;
+  color: #dc2626;
+  font-weight: 600;
+  border-left: 4px solid #dc2626;
+}
+
+.quadrant-q2 {
+  background: #f0fdf4 !important;
+  color: #059669;
+  font-weight: 600;
+  border-left: 4px solid #059669;
+}
+
+.quadrant-q3 {
+  background: #fffbeb !important;
+  color: #d97706;
+  font-weight: 600;
+  border-left: 4px solid #d97706;
+}
+
+.quadrant-q4 {
+  background: #faf5ff !important;
+  color: #7c3aed;
+  font-weight: 600;
+  border-left: 4px solid #7c3aed;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .matrix-grid {
+    min-height: 300px;
+    gap: 15px;
+  }
+  
+  .quadrant-header h4 {
+    font-size: 1rem;
+  }
+  
+  .hr-item {
+    font-size: 0.8rem;
+    padding: 6px 10px;
+  }
+  
+  .quadrant-cards-container,
+  .breakdown-container {
+    padding: 15px;
+  }
 }
 
 @media (max-width: 768px) {
-  .dashboard-container {
-    padding: 10px;
-  }
-  
-  .tabs {
-    flex-direction: column;
-  }
-  
-  .summary-table {
-    font-size: 0.75rem;
-  }
-  
-  .summary-table th,
-  .summary-table td {
-    padding: 6px 8px;
-  }
-
-  .stats-table {
-    font-size: 0.7rem;
-    min-width: 800px;
-  }
-  
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .charts-grid {
+  .matrix-grid {
     grid-template-columns: 1fr;
+    grid-template-rows: repeat(4, auto);
+    gap: 12px;
+    min-height: auto;
   }
   
-  .chart-bars {
-    gap: 8px;
-    padding: 0 5px;
+  .legend-axis.vertical {
+    display: none;
   }
+  
+  .breakdown-table {
+    font-size: 0.8rem;
+  }
+  
+  .breakdown-table th,
+  .breakdown-table td {
+    padding: 8px 10px;
+  }
+  
+  .quadrant-section, .quadrant-analysis-section {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 640px) {
+  .quadrant-card {
+    padding: 12px;
+  }
+  
+  .quadrant-content {
+    max-height: 200px;
+  }
+  
+  .quadrant-cards-container,
+  .breakdown-container {
+    padding: 12px;
+  }
+}
+
+/* Ensure no overlap with proper z-index stacking */
+.quadrant-cards-container {
+  position: relative;
+  z-index: 1;
+}
+
+.breakdown-container {
+  position: relative;
+  z-index: 2;
+}
+
+/* Clear separation between sections */
+.quadrant-section > *,
+.quadrant-analysis-section > * {
+  position: relative;
+  z-index: auto;
 }
 </style>

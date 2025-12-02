@@ -1108,44 +1108,53 @@ export default {
       document.body.removeChild(link);
     },
 
-    // Quadrant Analysis Methods
-    calculateQuadrantData(responses) {
-      const quadrantItems = {};
-      
-      responses.forEach(response => {
-        ['hr1', 'hr2', 'hr3', 'hr4', 'hr5', 'hr6'].forEach(section => {
-          const sectionData = response[section];
-          if (sectionData) {
-            sectionData.forEach((item, index) => {
-              const hrCode = `${section.toUpperCase()}${index + 1}`;
-              
-              if (!quadrantItems[hrCode]) {
-                quadrantItems[hrCode] = { q1: 0, q2: 0, q3: 0, q4: 0 };
-              }
-              
-              if (item.importance && item.implementation && 
-                  item.importance !== 'NA' && item.implementation !== 'NA') {
-                
-                const importance = parseInt(item.importance);
-                const implementation = parseInt(item.implementation);
-                
-                if (importance >= 3 && implementation <= 2) {
-                  quadrantItems[hrCode].q1++;
-                } else if (importance >= 3 && implementation >= 3) {
-                  quadrantItems[hrCode].q2++;
-                } else if (importance <= 2 && implementation <= 2) {
-                  quadrantItems[hrCode].q3++;
-                } else if (importance <= 2 && implementation >= 3) {
-                  quadrantItems[hrCode].q4++;
-                }
-              }
-            });
+  calculateQuadrantData(responses) {
+  const quadrantItems = {};
+  
+  responses.forEach(response => {
+    ['hr1', 'hr2', 'hr3', 'hr4', 'hr5', 'hr6'].forEach(section => {
+      const sectionData = response[section];
+      if (sectionData) {
+        sectionData.forEach((item, index) => {
+          // Changed from: const hrCode = `${section.toUpperCase()}${index + 1}`;
+          // To: include decimal point
+          const sectionNum = section.replace('hr', '');
+          const hrCode = `HR${sectionNum}.${index + 1}`;
+          
+          if (!quadrantItems[hrCode]) {
+            quadrantItems[hrCode] = { q1: 0, q2: 0, q3: 0, q4: 0 };
+          }
+          
+          if (item.importance && item.implementation && 
+              item.importance !== 'NA' && item.implementation !== 'NA') {
+            
+            const importance = parseInt(item.importance);
+            const implementation = parseInt(item.implementation);
+            
+            // Apply the correct quadrant logic
+            if ((importance === 3 || importance === 4) && (implementation === 1 || implementation === 2)) {
+              // Q1: High Importance (3/4), Low Implementation (1/2)
+              quadrantItems[hrCode].q1++;
+            } else if ((importance === 3 || importance === 4) && (implementation === 3 || implementation === 4)) {
+              // Q2: High Importance (3/4), High Implementation (3/4)
+              quadrantItems[hrCode].q2++;
+            } else if ((importance === 1 || importance === 2) && (implementation === 1 || implementation === 2)) {
+              // Q3: Low Importance (1/2), Low Implementation (1/2)
+              quadrantItems[hrCode].q3++;
+            } else if ((importance === 1 || importance === 2) && (implementation === 3 || implementation === 4)) {
+              // Q4: Low Importance (1/2), High Implementation (3/4)
+              quadrantItems[hrCode].q4++;
+            }
+            // Note: Any other combinations (e.g., importance 3, implementation undefined)
+            // are not counted in any quadrant
           }
         });
-      });
-      
-      return quadrantItems;
-    },
+      }
+    });
+  });
+  
+  return quadrantItems;
+},
 
     getFinalQuadrant(hrCode) {
       const counts = this.quadrantData[hrCode];

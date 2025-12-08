@@ -472,7 +472,7 @@
         <thead>
           <tr>
             <th>HR Item</th>
-            <th>Final Quadrant</th>
+        
             <th>Q1 Count</th>
             <th>Q2 Count</th>
             <th>Q3 Count</th>
@@ -483,9 +483,7 @@
         <tbody>
           <tr v-for="hrCode in getAllHRItems()" :key="hrCode">
             <td class="font-medium">{{ hrCode }}</td>
-            <td :class="`quadrant-${getFinalQuadrant(hrCode)}`">
-              {{ getQuadrantName(getFinalQuadrant(hrCode)) }}
-            </td>
+          
             <td>{{ quadrantData[hrCode]?.q1 || 0 }}</td>
             <td>{{ quadrantData[hrCode]?.q2 || 0 }}</td>
             <td>{{ quadrantData[hrCode]?.q3 || 0 }}</td>
@@ -520,6 +518,31 @@
           <div v-for="hrCode in getCombinedQuadrantItems('q1')" :key="hrCode" class="hr-item">
             {{ hrCode }}
             <span class="item-count">({{ getCombinedItemCount(hrCode) }})</span>
+             <!-- ADD THIS CHART GRID HERE -->
+      <div class="quadrant-item-chart">
+        <div class="chart-bars small">
+          <div v-for="(quad, quadKey) in ['q1', 'q2', 'q3', 'q4']" :key="quadKey" 
+               class="chart-bar-container small">
+            <div class="chart-label">{{ quad.toUpperCase().replace('Q', '') }}</div>
+            <div class="chart-bar-wrapper small">
+              <div 
+                class="chart-bar quadrant-bar" 
+                :class="`quadrant-${quad.replace('q', '')}`"
+                :style="{ 
+                  height: getQuadrantChartPercentage(
+                    getQuadrantChartData(hrCode, combinedQuadrantData)[quad], 
+                    getQuadrantChartData(hrCode, combinedQuadrantData).total
+                  ) + '%' 
+                }"
+                :title="`${quad.toUpperCase()}: ${getQuadrantChartData(hrCode, combinedQuadrantData)[quad]} assessments`"
+              >
+                <span class="chart-count small">{{ getQuadrantChartData(hrCode, combinedQuadrantData)[quad] }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- END OF CHART GRID -->
           </div>
           <div v-if="getCombinedQuadrantItems('q1').length === 0" class="no-items">
             No items
@@ -537,6 +560,31 @@
           <div v-for="hrCode in getCombinedQuadrantItems('q2')" :key="hrCode" class="hr-item">
             {{ hrCode }}
             <span class="item-count">({{ getCombinedItemCount(hrCode) }})</span>
+             <!-- ADD THIS CHART GRID HERE -->
+      <div class="quadrant-item-chart">
+        <div class="chart-bars small">
+          <div v-for="(quad, quadKey) in ['q1', 'q2', 'q3', 'q4']" :key="quadKey" 
+               class="chart-bar-container small">
+            <div class="chart-label">{{ quad.toUpperCase().replace('Q', '') }}</div>
+            <div class="chart-bar-wrapper small">
+              <div 
+                class="chart-bar quadrant-bar" 
+                :class="`quadrant-${quad.replace('q', '')}`"
+                :style="{ 
+                  height: getQuadrantChartPercentage(
+                    getQuadrantChartData(hrCode, combinedQuadrantData)[quad], 
+                    getQuadrantChartData(hrCode, combinedQuadrantData).total
+                  ) + '%' 
+                }"
+                :title="`${quad.toUpperCase()}: ${getQuadrantChartData(hrCode, combinedQuadrantData)[quad]} assessments`"
+              >
+                <span class="chart-count small">{{ getQuadrantChartData(hrCode, combinedQuadrantData)[quad] }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- END OF CHART GRID -->
           </div>
           <div v-if="getCombinedQuadrantItems('q2').length === 0" class="no-items">
             No items
@@ -554,6 +602,31 @@
           <div v-for="hrCode in getCombinedQuadrantItems('q3')" :key="hrCode" class="hr-item">
             {{ hrCode }}
             <span class="item-count">({{ getCombinedItemCount(hrCode) }})</span>
+             <!-- ADD THIS CHART GRID HERE -->
+      <div class="quadrant-item-chart">
+        <div class="chart-bars small">
+          <div v-for="(quad, quadKey) in ['q1', 'q2', 'q3', 'q4']" :key="quadKey" 
+               class="chart-bar-container small">
+            <div class="chart-label">{{ quad.toUpperCase().replace('Q', '') }}</div>
+            <div class="chart-bar-wrapper small">
+              <div 
+                class="chart-bar quadrant-bar" 
+                :class="`quadrant-${quad.replace('q', '')}`"
+                :style="{ 
+                  height: getQuadrantChartPercentage(
+                    getQuadrantChartData(hrCode, combinedQuadrantData)[quad], 
+                    getQuadrantChartData(hrCode, combinedQuadrantData).total
+                  ) + '%' 
+                }"
+                :title="`${quad.toUpperCase()}: ${getQuadrantChartData(hrCode, combinedQuadrantData)[quad]} assessments`"
+              >
+                <span class="chart-count small">{{ getQuadrantChartData(hrCode, combinedQuadrantData)[quad] }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- END OF CHART GRID -->
           </div>
           <div v-if="getCombinedQuadrantItems('q3').length === 0" class="no-items">
             No items
@@ -571,6 +644,31 @@
           <div v-for="hrCode in getCombinedQuadrantItems('q4')" :key="hrCode" class="hr-item">
             {{ hrCode }}
             <span class="item-count">({{ getCombinedItemCount(hrCode) }})</span>
+             <!-- ADD THIS CHART GRID HERE -->
+      <div class="quadrant-item-chart">
+        <div class="chart-bars small">
+          <div v-for="(quad, quadKey) in ['q1', 'q2', 'q3', 'q4']" :key="quadKey" 
+               class="chart-bar-container small">
+            <div class="chart-label">{{ quad.toUpperCase().replace('Q', '') }}</div>
+            <div class="chart-bar-wrapper small">
+              <div 
+                class="chart-bar quadrant-bar" 
+                :class="`quadrant-${quad.replace('q', '')}`"
+                :style="{ 
+                  height: getQuadrantChartPercentage(
+                    getQuadrantChartData(hrCode, combinedQuadrantData)[quad], 
+                    getQuadrantChartData(hrCode, combinedQuadrantData).total
+                  ) + '%' 
+                }"
+                :title="`${quad.toUpperCase()}: ${getQuadrantChartData(hrCode, combinedQuadrantData)[quad]} assessments`"
+              >
+                <span class="chart-count small">{{ getQuadrantChartData(hrCode, combinedQuadrantData)[quad] }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- END OF CHART GRID -->
           </div>
           <div v-if="getCombinedQuadrantItems('q4').length === 0" class="no-items">
             No items
@@ -587,21 +685,17 @@
       <table>
         <thead>
           <tr>
-            <th>HR Item</th>
-            <th>Final Quadrant</th>
-            <th>Q1 Count</th>
-            <th>Q2 Count</th>
-            <th>Q3 Count</th>
-            <th>Q4 Count</th>
+            <th>HR Item</th>         
+            <th>Q1: Fix & Improve</th>
+            <th>Q2: Maintain & Sustain</th>
+            <th>Q3: Leave Alone</th>
+            <th>Q4: Review to Maintain or Abolish</th>
             <th>Total Assessments</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="hrCode in getAllCombinedHRItems()" :key="hrCode">
             <td class="font-medium">{{ hrCode }}</td>
-            <td :class="`quadrant-${getCombinedFinalQuadrant(hrCode)}`">
-              {{ getQuadrantName(getCombinedFinalQuadrant(hrCode)) }}
-            </td>
             <td>{{ combinedQuadrantData[hrCode]?.q1 || 0 }}</td>
             <td>{{ combinedQuadrantData[hrCode]?.q2 || 0 }}</td>
             <td>{{ combinedQuadrantData[hrCode]?.q3 || 0 }}</td>
@@ -614,6 +708,208 @@
       </table>
     </div>
   </div>
+
+<div class="hr-item-submissions-section mt-8">
+  <h4>📊 HR Item Submission Sources</h4>
+  <p class="text-sm text-gray-600 mb-6">
+    Percentage breakdown of which survey types contributed to each HR item's assessments
+  </p>
+  
+  <div class="submissions-table">
+    <table>
+      <thead>
+        <tr>
+          <th>HR Item</th>
+          <th>Management Assessment</th>
+          <th>HR Self-Assessment</th>
+          <th>User Survey</th>
+          <th>Total Assessments</th>
+        </tr>
+      </thead>
+      <tbody>
+       <tr v-for="hrCode in getAllCombinedHRItems()" :key="hrCode">
+  <td class="font-medium">{{ hrCode }}</td>
+  <td :style="getPercentageStyle(hrCode, 'management')">
+    {{ getSubmissionPercentage(hrCode, 'management') }}%
+  </td>
+  <td :style="getPercentageStyle(hrCode, 'hr')">
+    {{ getSubmissionPercentage(hrCode, 'hr') }}%
+  </td>
+  <td :style="getPercentageStyle(hrCode, 'survey')">
+    {{ getSubmissionPercentage(hrCode, 'survey') }}%
+  </td>
+  <td class="font-medium">
+    {{ getTotalAssessmentsBySource(hrCode).total }}
+  </td>
+</tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+  <!-- Add this section RIGHT AFTER the closing </div> of the breakdown-container -->
+<div class="charts-section mt-8">
+  <h4>📈 Quadrant Distribution Charts</h4>
+  <p class="text-sm text-gray-600 mb-6">Visual breakdown of quadrant assessments per HR item</p>
+  
+  <!-- Charts Grid -->
+  <div class="charts-grid">
+    <!-- Q1 Chart -->
+    <div class="chart-card">
+      <h5>Q1: Fix & Improve Assessments</h5>
+      <p class="chart-subtitle">High Importance, Low Implementation</p>
+      <div class="chart-container">
+        <div class="chart-y-axis">
+          <span>Assessments</span>
+        </div>
+        <div class="chart-content">
+          <div class="chart-bars horizontal">
+            <div 
+              v-for="hrCode in getAllCombinedHRItems()" 
+              :key="'q1-chart-' + hrCode"
+              class="chart-bar-wrapper"
+            >
+              <div class="chart-bar-label">{{ hrCode }}</div>
+              <div class="chart-bar-bg">
+                <div 
+                  class="chart-bar q1-bar"
+                  :style="{ width: getChartPercentage(combinedQuadrantData[hrCode]?.q1 || 0, getMaxQ1Value()) + '%' }"
+                  :title="`${hrCode}: ${combinedQuadrantData[hrCode]?.q1 || 0} assessments`"
+                >
+                  <span class="chart-bar-value">{{ combinedQuadrantData[hrCode]?.q1 || 0 }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Q2 Chart -->
+    <div class="chart-card">
+      <h5>Q2: Maintain & Sustain Assessments</h5>
+      <p class="chart-subtitle">High Importance, High Implementation</p>
+      <div class="chart-container">
+        <div class="chart-y-axis">
+          <span>Assessments</span>
+        </div>
+        <div class="chart-content">
+          <div class="chart-bars horizontal">
+            <div 
+              v-for="hrCode in getAllCombinedHRItems()" 
+              :key="'q2-chart-' + hrCode"
+              class="chart-bar-wrapper"
+            >
+              <div class="chart-bar-label">{{ hrCode }}</div>
+              <div class="chart-bar-bg">
+                <div 
+                  class="chart-bar q2-bar"
+                  :style="{ width: getChartPercentage(combinedQuadrantData[hrCode]?.q2 || 0, getMaxQ2Value()) + '%' }"
+                  :title="`${hrCode}: ${combinedQuadrantData[hrCode]?.q2 || 0} assessments`"
+                >
+                  <span class="chart-bar-value">{{ combinedQuadrantData[hrCode]?.q2 || 0 }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Q3 Chart -->
+    <div class="chart-card">
+      <h5>Q3: Leave Alone Assessments</h5>
+      <p class="chart-subtitle">Low Importance, Low Implementation</p>
+      <div class="chart-container">
+        <div class="chart-y-axis">
+          <span>Assessments</span>
+        </div>
+        <div class="chart-content">
+          <div class="chart-bars horizontal">
+            <div 
+              v-for="hrCode in getAllCombinedHRItems()" 
+              :key="'q3-chart-' + hrCode"
+              class="chart-bar-wrapper"
+            >
+              <div class="chart-bar-label">{{ hrCode }}</div>
+              <div class="chart-bar-bg">
+                <div 
+                  class="chart-bar q3-bar"
+                  :style="{ width: getChartPercentage(combinedQuadrantData[hrCode]?.q3 || 0, getMaxQ3Value()) + '%' }"
+                  :title="`${hrCode}: ${combinedQuadrantData[hrCode]?.q3 || 0} assessments`"
+                >
+                  <span class="chart-bar-value">{{ combinedQuadrantData[hrCode]?.q3 || 0 }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Q4 Chart -->
+    <div class="chart-card">
+      <h5>Q4: Review to Maintain or Abolish Assessments</h5>
+      <p class="chart-subtitle">Low Importance, High Implementation</p>
+      <div class="chart-container">
+        <div class="chart-y-axis">
+          <span>Assessments</span>
+        </div>
+        <div class="chart-content">
+          <div class="chart-bars horizontal">
+            <div 
+              v-for="hrCode in getAllCombinedHRItems()" 
+              :key="'q4-chart-' + hrCode"
+              class="chart-bar-wrapper"
+            >
+              <div class="chart-bar-label">{{ hrCode }}</div>
+              <div class="chart-bar-bg">
+                <div 
+                  class="chart-bar q4-bar"
+                  :style="{ width: getChartPercentage(combinedQuadrantData[hrCode]?.q4 || 0, getMaxQ4Value()) + '%' }"
+                  :title="`${hrCode}: ${combinedQuadrantData[hrCode]?.q4 || 0} assessments`"
+                >
+                  <span class="chart-bar-value">{{ combinedQuadrantData[hrCode]?.q4 || 0 }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Total Assessments Chart -->
+    <div class="chart-card full-width">
+      <h5>Total Assessments per HR Item</h5>
+      <p class="chart-subtitle">Combined assessments across all quadrants</p>
+      <div class="chart-container">
+        <div class="chart-y-axis">
+          <span>Total Assessments</span>
+        </div>
+        <div class="chart-content">
+          <div class="chart-bars horizontal">
+            <div 
+              v-for="hrCode in getAllCombinedHRItems()" 
+              :key="'total-chart-' + hrCode"
+              class="chart-bar-wrapper"
+            >
+              <div class="chart-bar-label">{{ hrCode }}</div>
+              <div class="chart-bar-bg">
+                <div 
+                  class="chart-bar total-bar"
+                  :style="{ width: getChartPercentage(getCombinedTotalAssessments(hrCode), getMaxTotalValue()) + '%' }"
+                  :title="`${hrCode}: ${getCombinedTotalAssessments(hrCode)} total assessments`"
+                >
+                  <span class="chart-bar-value">{{ getCombinedTotalAssessments(hrCode) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
       </div>
     </div>
@@ -821,6 +1117,31 @@ export default {
         this.fetchResponses();
       }
     },
+    getPercentageStyle(hrCode, surveyType) {
+  const percentage = this.getSubmissionPercentage(hrCode, surveyType);
+  return {
+    '--percent': `${percentage}%`
+  };
+},
+    // Add this method to calculate chart data for a specific HR item in the combined quadrant data
+getQuadrantChartData(hrCode, quadrantData) {
+  const counts = quadrantData[hrCode];
+  if (!counts) return { q1: 0, q2: 0, q3: 0, q4: 0 };
+  
+  return {
+    q1: counts.q1 || 0,
+    q2: counts.q2 || 0,
+    q3: counts.q3 || 0,
+    q4: counts.q4 || 0,
+    total: (counts.q1 || 0) + (counts.q2 || 0) + (counts.q3 || 0) + (counts.q4 || 0)
+  };
+},
+
+// Add this method to get chart percentage
+getQuadrantChartPercentage(value, total) {
+  if (total === 0) return 0;
+  return (value / total) * 100;
+},
     async fetchResponses() {
       this.fetchError = null;
       try {
@@ -834,26 +1155,32 @@ export default {
       }
     },
     async fetchAllResponses() {
-      this.fetchError = null;
-      try {
-        // Fetch all survey types for combined analysis
-        const [managementRes, hrRes, surveyRes] = await Promise.all([
-          axios.get("/api/management", { headers: { Authorization: `Bearer ${this.token}` } }),
-          axios.get("/api/hr-self-assessment", { headers: { Authorization: `Bearer ${this.token}` } }),
-          axios.get("/api/user-survey", { headers: { Authorization: `Bearer ${this.token}` } })
-        ]);
-        
-        this.allResponses = [
-          ...managementRes.data,
-          ...hrRes.data,
-          ...surveyRes.data
-        ];
-        this.responses = this.allResponses; // Set current responses to all for display
-      } catch (err) {
-        console.error("Error fetching all responses:", err);
-        this.handleFetchError(err);
-      }
-    },
+  this.fetchError = null;
+  try {
+    // Fetch all survey types for combined analysis
+    const [managementRes, hrRes, surveyRes] = await Promise.all([
+      axios.get("/api/management", { headers: { Authorization: `Bearer ${this.token}` } }),
+      axios.get("/api/hr-self-assessment", { headers: { Authorization: `Bearer ${this.token}` } }),
+      axios.get("/api/user-survey", { headers: { Authorization: `Bearer ${this.token}` } })
+    ]);
+    
+    // Add surveyType property to each response
+    const managementWithType = managementRes.data.map(r => ({ ...r, surveyType: 'management' }));
+    const hrWithType = hrRes.data.map(r => ({ ...r, surveyType: 'hr' }));
+    const surveyWithType = surveyRes.data.map(r => ({ ...r, surveyType: 'survey' }));
+    
+    this.allResponses = [
+      ...managementWithType,
+      ...hrWithType,
+      ...surveyWithType
+    ];
+    this.responses = this.allResponses; // Set current responses to all for display
+  } catch (err) {
+    console.error("Error fetching all responses:", err);
+    this.handleFetchError(err);
+  }
+},
+
     handleFetchError(err) {
       if (err.response) {
         this.fetchError = `Error ${err.response.status}: ${err.response.data.message || err.response.data.error || "Unknown error"}`;
@@ -913,6 +1240,115 @@ export default {
       if (num >= 2) return 'rating-low';
       return 'rating-very-low';
     },
+// Add these methods to your existing methods object:
+
+// Chart helper methods
+getChartPercentage(value, maxValue) {
+  if (!maxValue || maxValue === 0) return 0;
+  return (value / maxValue) * 100;
+},
+
+getMaxQ1Value() {
+  let max = 0;
+  for (const hrCode in this.combinedQuadrantData) {
+    const value = this.combinedQuadrantData[hrCode]?.q1 || 0;
+    if (value > max) max = value;
+  }
+  return max;
+},
+
+getMaxQ2Value() {
+  let max = 0;
+  for (const hrCode in this.combinedQuadrantData) {
+    const value = this.combinedQuadrantData[hrCode]?.q2 || 0;
+    if (value > max) max = value;
+  }
+  return max;
+},
+
+getMaxQ3Value() {
+  let max = 0;
+  for (const hrCode in this.combinedQuadrantData) {
+    const value = this.combinedQuadrantData[hrCode]?.q3 || 0;
+    if (value > max) max = value;
+  }
+  return max;
+},
+
+getMaxQ4Value() {
+  let max = 0;
+  for (const hrCode in this.combinedQuadrantData) {
+    const value = this.combinedQuadrantData[hrCode]?.q4 || 0;
+    if (value > max) max = value;
+  }
+  return max;
+},
+
+getMaxTotalValue() {
+  let max = 0;
+  for (const hrCode in this.combinedQuadrantData) {
+    const value = this.getCombinedTotalAssessments(hrCode);
+    if (value > max) max = value;
+  }
+  return max;
+},
+
+getAssessmentSourceCounts(hrCode) {
+  const counts = { management: 0, hr: 0, survey: 0, total: 0 };
+  
+  // Reset allResponses to have surveyType property if not already set
+  if (!this.allResponses || this.allResponses.length === 0) {
+    return counts;
+  }
+  
+  this.allResponses.forEach(response => {
+    ['hr1', 'hr2', 'hr3', 'hr4', 'hr5', 'hr6'].forEach(section => {
+      const sectionData = response[section];
+      if (sectionData) {
+        sectionData.forEach((item, index) => {
+          const sectionNum = section.replace('hr', '');
+          const currentHRCode = `HR${sectionNum}.${index + 1}`;
+          
+          if (currentHRCode === hrCode && item.importance && item.implementation && 
+              item.importance !== 'NA' && item.implementation !== 'NA') {
+            
+            const importance = parseInt(item.importance);
+            const implementation = parseInt(item.implementation);
+            
+            if (importance >= 1 && importance <= 4 && implementation >= 1 && implementation <= 4) {
+              // Determine which survey type this came from
+              if (response.surveyType) {
+                counts[response.surveyType]++;
+              } else {
+                // Fallback: determine by response structure
+                if (response.managerName && !response.assessorName && !response.name) {
+                  counts.management++;
+                } else if (response.assessorName && !response.managerName && !response.name) {
+                  counts.hr++;
+                } else if (response.name && !response.managerName && !response.assessorName) {
+                  counts.survey++;
+                }
+              }
+              counts.total++;
+            }
+          }
+        });
+      }
+    });
+  });
+  
+  return counts;
+},
+
+getTotalAssessmentsBySource(hrCode) {
+  return this.getAssessmentSourceCounts(hrCode);
+},
+
+getSubmissionPercentage(hrCode, surveyType) {
+  const counts = this.getAssessmentSourceCounts(hrCode);
+  if (counts.total === 0) return 0;
+  return Math.round((counts[surveyType] / counts.total) * 100);
+},
 
     // Statistics Methods
     getCurrentSectionQuestions() {
@@ -1284,6 +1720,104 @@ export default {
 
 .tabs button:hover:not(.active) {
   background: #f3f4f6;
+}
+
+.hr-item-submissions-section {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 25px;
+  margin-top: 30px;
+}
+
+.submissions-table {
+  overflow-x: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: white;
+}
+
+.submissions-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.submissions-table th,
+.submissions-table td {
+  border: 1px solid #e5e7eb;
+  padding: 10px 12px;
+  text-align: center;
+}
+
+.submissions-table th {
+  background: #1e40af;
+  color: white;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+}
+
+.submissions-table th:first-child {
+  text-align: left;
+}
+
+.submissions-table td:first-child {
+  text-align: left;
+  font-weight: 500;
+}
+
+.submissions-table tr:nth-child(even) {
+  background: #f9fafb;
+}
+
+.submissions-table tr:hover {
+  background: #f0f9ff;
+}
+
+/* Color coding for percentages */
+.submissions-table td:nth-child(2) { /* Management */
+  background: linear-gradient(to right, #f0f9ff 0%, #f0f9ff var(--percent), white var(--percent), white 100%);
+  position: relative;
+}
+
+.submissions-table td:nth-child(3) { /* HR Self-Assessment */
+  background: linear-gradient(to right, #f0fdf4 0%, #f0fdf4 var(--percent), white var(--percent), white 100%);
+  position: relative;
+}
+
+.submissions-table td:nth-child(4) { /* User Survey */
+  background: linear-gradient(to right, #faf5ff 0%, #faf5ff var(--percent), white var(--percent), white 100%);
+  position: relative;
+}
+
+/* Add percentage indicator inside cells */
+.submissions-table td::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--percent);
+  z-index: -1;
+  opacity: 0.1;
+}
+
+.submissions-table td:nth-child(2)::before {
+  background-color: #0ea5e9;
+}
+
+.submissions-table td:nth-child(3)::before {
+  background-color: #10b981;
+}
+
+.submissions-table td:nth-child(4)::before {
+  background-color: #8b5cf6;
+}
+
+.submissions-table td {
+  position: relative;
+  z-index: 1;
 }
 
 .data-section {
@@ -2162,5 +2696,398 @@ export default {
 .quadrant-analysis-section > * {
   position: relative;
   z-index: auto;
+}
+
+/* Quadrant Item Chart Styles */
+.quadrant-item-chart {
+  margin-top: 8px;
+  width: 100%;
+}
+
+.chart-bars.small {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  height: 60px;
+  gap: 4px;
+  padding: 0 5px;
+  background: #f8fafc;
+  border-radius: 4px;
+}
+
+.chart-bar-container.small {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  height: 100%;
+}
+
+.chart-bar-wrapper.small {
+  height: 40px;
+  width: 100%;
+  display: flex;
+  align-items: end;
+  position: relative;
+  background: #f1f5f9;
+  border-radius: 2px;
+}
+
+.chart-bar.quadrant-bar {
+  width: 100%;
+  border-radius: 2px 2px 0 0;
+  transition: all 0.3s ease;
+  position: relative;
+  min-height: 4px;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+}
+
+/* Quadrant-specific bar colors */
+.chart-bar.quadrant-bar.quadrant-1 {
+  background: linear-gradient(to top, #dc2626, #ef4444);
+  box-shadow: 0 1px 2px rgba(220, 38, 38, 0.3);
+}
+
+.chart-bar.quadrant-bar.quadrant-2 {
+  background: linear-gradient(to top, #059669, #10b981);
+  box-shadow: 0 1px 2px rgba(5, 150, 105, 0.3);
+}
+
+.chart-bar.quadrant-bar.quadrant-3 {
+  background: linear-gradient(to top, #d97706, #f59e0b);
+  box-shadow: 0 1px 2px rgba(217, 119, 6, 0.3);
+}
+
+.chart-bar.quadrant-bar.quadrant-4 {
+  background: linear-gradient(to top, #7c3aed, #8b5cf6);
+  box-shadow: 0 1px 2px rgba(124, 58, 237, 0.3);
+}
+
+.chart-count.small {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: #374151;
+  white-space: nowrap;
+  background: white;
+  padding: 1px 4px;
+  border-radius: 2px;
+  border: 1px solid #e5e7eb;
+  z-index: 1;
+}
+
+.chart-label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #374151;
+  text-align: center;
+}
+
+/* Adjust HR item to accommodate chart */
+.hr-item {
+  padding: 8px 12px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  transition: all 0.2s ease;
+  margin-bottom: 8px;
+}
+
+.hr-item:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.item-count {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: normal;
+  background: #f3f4f6;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: auto;
+  margin-bottom: 8px;
+}
+
+/* Make sure chart bars are visible even with low counts */
+.chart-bar-wrapper.small {
+  min-height: 40px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .chart-bars.small {
+    height: 50px;
+    gap: 3px;
+  }
+  
+  .chart-bar-wrapper.small {
+    height: 30px;
+  }
+  
+  .chart-count.small {
+    font-size: 0.55rem;
+    top: -16px;
+  }
+  
+  .chart-label {
+    font-size: 0.55rem;
+  }
+}
+
+/* Add these styles to your existing styles */
+
+/* Charts Section */
+.charts-section {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 25px;
+  margin-top: 30px;
+}
+
+.charts-section h4 {
+  margin-bottom: 10px;
+  color: #374151;
+  font-size: 1.25rem;
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+  margin-top: 20px;
+}
+
+@media (max-width: 1024px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chart-card {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-card.full-width {
+  grid-column: 1 / -1;
+}
+
+.chart-card h5 {
+  margin: 0 0 5px 0;
+  color: #1f2937;
+  font-size: 1rem;
+}
+
+.chart-subtitle {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 15px;
+  font-style: italic;
+}
+
+.chart-container {
+  display: flex;
+  flex: 1;
+  min-height: 300px;
+  max-height: 350px;
+  overflow: hidden;
+}
+
+.chart-card.full-width .chart-container {
+  min-height: 400px;
+  max-height: 450px;
+}
+
+.chart-y-axis {
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid #d1d5db;
+  margin-right: 10px;
+}
+
+.chart-y-axis span {
+  transform: rotate(-90deg);
+  white-space: nowrap;
+  font-size: 0.8rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.chart-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.chart-bars.horizontal {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.chart-bar-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 1px 0;
+}
+
+.chart-bar-label {
+  width: 60px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #374151;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.chart-bar-bg {
+  flex: 1;
+  height: 24px;
+  background: #f1f5f9;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.chart-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+  min-width: 30px;
+}
+
+.chart-bar-value {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: white;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+/* Quadrant-specific bar colors */
+.q1-bar {
+  background: linear-gradient(90deg, #ef4444, #f87171);
+  box-shadow: 0 1px 3px rgba(239, 68, 68, 0.2);
+}
+
+.q2-bar {
+  background: linear-gradient(90deg, #10b981, #34d399);
+  box-shadow: 0 1px 3px rgba(16, 185, 129, 0.2);
+}
+
+.q3-bar {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+  box-shadow: 0 1px 3px rgba(245, 158, 11, 0.2);
+}
+
+.q4-bar {
+  background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+  box-shadow: 0 1px 3px rgba(139, 92, 246, 0.2);
+}
+
+.total-bar {
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  box-shadow: 0 1px 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Scrollbar styling */
+.chart-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chart-content::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.chart-content::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.chart-content::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Hover effects */
+.chart-bar-wrapper:hover .chart-bar-label {
+  color: #1e40af;
+}
+
+.chart-bar-wrapper:hover .chart-bar-bg {
+  background: #e2e8f0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .charts-section {
+    padding: 15px;
+  }
+  
+  .chart-container {
+    min-height: 250px;
+    max-height: 300px;
+  }
+  
+  .chart-card.full-width .chart-container {
+    min-height: 350px;
+    max-height: 400px;
+  }
+  
+  .chart-bar-label {
+    width: 50px;
+    font-size: 0.7rem;
+  }
+  
+  .chart-bar-value {
+    font-size: 0.65rem;
+    padding-right: 5px;
+  }
+}
+
+@media (max-width: 640px) {
+  .charts-grid {
+    gap: 15px;
+  }
+  
+  .chart-card {
+    padding: 15px;
+  }
+  
+  .chart-y-axis {
+    width: 30px;
+  }
+  
+  .chart-y-axis span {
+    font-size: 0.7rem;
+  }
+  
+  .chart-bar-bg {
+    height: 20px;
+  }
 }
 </style>

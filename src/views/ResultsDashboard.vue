@@ -709,17 +709,18 @@
     </div>
   </div>
 
-<div class="hr-item-submissions-section mt-8">
-  <h4>📊 HR Item Submission Sources</h4>
+<div class="quadrant-submissions-section mt-8">
+  <h4>📊 Quadrant Submission Sources</h4>
   <p class="text-sm text-gray-600 mb-6">
-    Percentage breakdown of which survey types contributed to each HR item's assessments
+    Percentage breakdown of which survey types contributed to each quadrant
   </p>
   
   <div class="submissions-table">
     <table>
       <thead>
         <tr>
-          <th>HR Item</th>
+          <th>Quadrant</th>
+          <th>Description</th>
           <th>Management Assessment</th>
           <th>HR Self-Assessment</th>
           <th>User Survey</th>
@@ -727,21 +728,34 @@
         </tr>
       </thead>
       <tbody>
-       <tr v-for="hrCode in getAllCombinedHRItems()" :key="hrCode">
-  <td class="font-medium">{{ hrCode }}</td>
-  <td :style="getPercentageStyle(hrCode, 'management')">
-    {{ getSubmissionPercentage(hrCode, 'management') }}%
-  </td>
-  <td :style="getPercentageStyle(hrCode, 'hr')">
-    {{ getSubmissionPercentage(hrCode, 'hr') }}%
-  </td>
-  <td :style="getPercentageStyle(hrCode, 'survey')">
-    {{ getSubmissionPercentage(hrCode, 'survey') }}%
-  </td>
-  <td class="font-medium">
-    {{ getTotalAssessmentsBySource(hrCode).total }}
-  </td>
-</tr>
+        <tr v-for="quadrant in ['q1', 'q2', 'q3', 'q4']" :key="quadrant">
+          <td class="font-medium">{{ getQuadrantDisplayName(quadrant) }}</td>
+          <td class="quadrant-desc-cell">{{ getQuadrantDescription(quadrant) }}</td>
+          <td :style="getQuadrantPercentageStyle(quadrant, 'management')">
+            {{ getQuadrantSourcePercentage(quadrant, 'management') }}%
+            <span class="count-badge">({{ getQuadrantSourceCount(quadrant, 'management') }})</span>
+          </td>
+          <td :style="getQuadrantPercentageStyle(quadrant, 'hr')">
+            {{ getQuadrantSourcePercentage(quadrant, 'hr') }}%
+            <span class="count-badge">({{ getQuadrantSourceCount(quadrant, 'hr') }})</span>
+          </td>
+          <td :style="getQuadrantPercentageStyle(quadrant, 'survey')">
+            {{ getQuadrantSourcePercentage(quadrant, 'survey') }}%
+            <span class="count-badge">({{ getQuadrantSourceCount(quadrant, 'survey') }})</span>
+          </td>
+          <td class="font-medium">
+            {{ getQuadrantTotalAssessments(quadrant) }}
+          </td>
+        </tr>
+        
+        <!-- Total Row -->
+        <tr class="total-row">
+          <td colspan="2" class="font-medium text-right">Total:</td>
+          <td class="font-medium">{{ getTotalSourceCount('management') }}</td>
+          <td class="font-medium">{{ getTotalSourceCount('hr') }}</td>
+          <td class="font-medium">{{ getTotalSourceCount('survey') }}</td>
+          <td class="font-medium">{{ getOverallTotalAssessments() }}</td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -1123,6 +1137,128 @@ export default {
     '--percent': `${percentage}%`
   };
 },
+
+// Add these methods to calculate quadrant-based source data
+calculateQuadrantSourceData() {
+  const quadrantSourceData = {
+    q1: { management: 0, hr: 0, survey: 0, total: 0 },
+    q2: { management: 0, hr: 0, survey: 0, total: 0 },
+    q3: { management: 0, hr: 0, survey: 0, total: 0 },
+    q4: { management: 0, hr: 0, survey: 0, total: 0 }
+  };
+  
+  if (!this.allResponses || this.allResponses.length === 0) {
+    return quadrantSourceData;
+  }
+  
+  this.allResponses.forEach(response => {
+    ['hr1', 'hr2', 'hr3', 'hr4', 'hr5', 'hr6'].forEach(section => {
+      const sectionData = response[section];
+      if (sectionData) {
+        sectionData.forEach((item, index) => {
+          if (item.importance && item.implementation && 
+              item.importance !== 'NA' && item.implementation !== 'NA') {
+            
+            const importance = parseInt(item.importance);
+            const implementation = parseInt(item.implementation);
+            
+            // Determine quadrant
+            let quadrant = null;
+            if ((importance === 3 || importance === 4) && (implementation === 1 || implementation === 2)) {
+              quadrant = 'q1';
+            } else if ((importance === 3 || importance === 4) && (implementation === 3 || implementation === 4)) {
+              quadrant = 'q2';
+            } else if ((importance === 1 || importance === 2) && (implementation === 1 || implementation === 2)) {
+              quadrant = 'q3';
+            } else if ((importance === 1 || importance === 2) && (implementation === 3 || implementation === 4)) {
+              quadrant = 'q4';
+            }
+            
+            if (quadrant) {
+              // Determine survey type
+              const surveyType = response.surveyType || 
+                (response.managerName && !response.assessorName && !response.name ? 'management' :
+                 response.assessorName && !response.managerName && !response.name ? 'hr' :
+                 response.name && !response.managerName && !response.assessorName ? 'survey' : 'unknown');
+              
+              if (surveyType && quadrantSourceData[quadrant]) {
+                quadrantSourceData[quadrant][surveyType]++;
+                quadrantSourceData[quadrant].total++;
+              }
+            }
+          }
+        });
+      }
+    });
+  });
+  
+  return quadrantSourceData;
+},
+
+getQuadrantDisplayName(quadrant) {
+  const names = {
+    q1: 'Q1: Fix & Improve',
+    q2: 'Q2: Maintain & Sustain',
+    q3: 'Q3: Leave Alone',
+    q4: 'Q4: Review to Maintain or Abolish'
+  };
+  return names[quadrant] || quadrant;
+},
+
+getQuadrantDescription(quadrant) {
+  const descs = {
+    q1: 'High Importance, Low Implementation',
+    q2: 'High Importance, High Implementation',
+    q3: 'Low Importance, Low Implementation',
+    q4: 'Low Importance, High Implementation'
+  };
+  return descs[quadrant] || '';
+},
+
+getQuadrantSourceCount(quadrant, surveyType) {
+  const sourceData = this.calculateQuadrantSourceData();
+  return sourceData[quadrant]?.[surveyType] || 0;
+},
+
+getQuadrantTotalAssessments(quadrant) {
+  const sourceData = this.calculateQuadrantSourceData();
+  return sourceData[quadrant]?.total || 0;
+},
+
+getQuadrantSourcePercentage(quadrant, surveyType) {
+  const sourceData = this.calculateQuadrantSourceData();
+  const quadrantData = sourceData[quadrant];
+  if (!quadrantData || quadrantData.total === 0) return 0;
+  
+  const count = quadrantData[surveyType] || 0;
+  return Math.round((count / quadrantData.total) * 100);
+},
+
+getQuadrantPercentageStyle(quadrant, surveyType) {
+  const percentage = this.getQuadrantSourcePercentage(quadrant, surveyType);
+  return {
+    '--percent': `${percentage}%`
+  };
+},
+
+getTotalSourceCount(surveyType) {
+  const sourceData = this.calculateQuadrantSourceData();
+  let total = 0;
+  for (const quadrant in sourceData) {
+    total += sourceData[quadrant][surveyType] || 0;
+  }
+  return total;
+},
+
+getOverallTotalAssessments() {
+  const sourceData = this.calculateQuadrantSourceData();
+  let total = 0;
+  for (const quadrant in sourceData) {
+    total += sourceData[quadrant].total || 0;
+  }
+  return total;
+},
+
     // Add this method to calculate chart data for a specific HR item in the combined quadrant data
 getQuadrantChartData(hrCode, quadrantData) {
   const counts = quadrantData[hrCode];
@@ -3089,5 +3225,152 @@ getSubmissionPercentage(hrCode, surveyType) {
   .chart-bar-bg {
     height: 20px;
   }
+}
+
+/* Add these styles to your existing CSS */
+.quadrant-submissions-section {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 25px;
+  margin-top: 30px;
+}
+
+.quadrant-submissions-section h4 {
+  margin-bottom: 10px;
+  color: #374151;
+  font-size: 1.25rem;
+}
+
+.quadrant-submissions-section .submissions-table {
+  overflow-x: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: white;
+}
+
+.quadrant-submissions-section table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.quadrant-submissions-section th,
+.quadrant-submissions-section td {
+  border: 1px solid #e5e7eb;
+  padding: 10px 12px;
+  text-align: center;
+}
+
+.quadrant-submissions-section th {
+  background: #1e40af;
+  color: white;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+}
+
+.quadrant-submissions-section th:first-child,
+.quadrant-submissions-section td:first-child {
+  text-align: left;
+}
+
+.quadrant-submissions-section th:nth-child(2),
+.quadrant-submissions-section td:nth-child(2) {
+  text-align: left;
+}
+
+.quadrant-desc-cell {
+  font-size: 0.8rem;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.quadrant-submissions-section tr:nth-child(even) {
+  background: #f9fafb;
+}
+
+.quadrant-submissions-section tr:hover {
+  background: #f0f9ff;
+}
+
+.quadrant-submissions-section .total-row {
+  background: #1e40af;
+  color: white;
+  font-weight: bold;
+}
+
+.quadrant-submissions-section .total-row td {
+  color: white;
+  border-color: #1e3a8a;
+}
+
+.count-badge {
+  font-size: 0.75rem;
+  color: #6b7280;
+  background: #f3f4f6;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 5px;
+}
+
+.quadrant-submissions-section td:nth-child(3) { /* Management */
+  background: linear-gradient(to right, #f0f9ff 0%, #f0f9ff var(--percent), white var(--percent), white 100%);
+  position: relative;
+}
+
+.quadrant-submissions-section td:nth-child(4) { /* HR Self-Assessment */
+  background: linear-gradient(to right, #f0fdf4 0%, #f0fdf4 var(--percent), white var(--percent), white 100%);
+  position: relative;
+}
+
+.quadrant-submissions-section td:nth-child(5) { /* User Survey */
+  background: linear-gradient(to right, #faf5ff 0%, #faf5ff var(--percent), white var(--percent), white 100%);
+  position: relative;
+}
+
+.quadrant-submissions-section td::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--percent);
+  z-index: -1;
+  opacity: 0.1;
+}
+
+.quadrant-submissions-section td:nth-child(3)::before {
+  background-color: #0ea5e9;
+}
+
+.quadrant-submissions-section td:nth-child(4)::before {
+  background-color: #10b981;
+}
+
+.quadrant-submissions-section td:nth-child(5)::before {
+  background-color: #8b5cf6;
+}
+
+.quadrant-submissions-section td {
+  position: relative;
+  z-index: 1;
+}
+
+/* Quadrant-specific row styling */
+.quadrant-submissions-section tr:nth-child(1) { /* Q1 */
+  border-left: 4px solid #dc2626;
+}
+
+.quadrant-submissions-section tr:nth-child(2) { /* Q2 */
+  border-left: 4px solid #059669;
+}
+
+.quadrant-submissions-section tr:nth-child(3) { /* Q3 */
+  border-left: 4px solid #d97706;
+}
+
+.quadrant-submissions-section tr:nth-child(4) { /* Q4 */
+  border-left: 4px solid #7c3aed;
 }
 </style>

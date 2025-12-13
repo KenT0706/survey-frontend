@@ -467,12 +467,16 @@
   <!-- Detailed Breakdown - COMPLETELY SEPARATE CONTAINER -->
   <div class="breakdown-container">
     <h4>📋 Detailed Quadrant Breakdown</h4>
+    <div class="export-section mt-4 mb-4">
+      <button @click="exportQuadrantBreakdown" class="export-btn bg-blue-600 hover:bg-blue-700">
+        📥 Export Quadrant Breakdown
+      </button>
+    </div>
     <div class="breakdown-table">
       <table>
         <thead>
           <tr>
             <th>HR Item</th>
-        
             <th>Q1 Count</th>
             <th>Q2 Count</th>
             <th>Q3 Count</th>
@@ -483,7 +487,6 @@
         <tbody>
           <tr v-for="hrCode in getAllHRItems()" :key="hrCode">
             <td class="font-medium">{{ hrCode }}</td>
-          
             <td>{{ quadrantData[hrCode]?.q1 || 0 }}</td>
             <td>{{ quadrantData[hrCode]?.q2 || 0 }}</td>
             <td>{{ quadrantData[hrCode]?.q3 || 0 }}</td>
@@ -504,6 +507,36 @@
   <p class="text-sm text-gray-600 mb-6">
     Combined analysis across all survey types
   </p>
+  
+  <!-- Export Buttons for Quadrant Analysis -->
+  <div class="export-grid mb-6">
+    <div class="export-section">
+      <button @click="exportQuadrantAnalysisToCSV" class="export-btn bg-purple-600 hover:bg-purple-700">
+        📊 Export All Quadrant Analysis (Excel)
+      </button>
+      <span class="text-sm text-gray-600 ml-4">
+        All sections in one Excel file
+      </span>
+    </div>
+    
+    <div class="export-section mt-4">
+      <button @click="exportCombinedQuadrantAnalysis" class="export-btn bg-indigo-600 hover:bg-indigo-700">
+        📋 Export Combined Quadrant Analysis
+      </button>
+      <button @click="exportCombinedQuadrantBreakdown" class="export-btn bg-blue-600 hover:bg-blue-700 ml-2">
+        📊 Export Combined Quadrant Breakdown
+      </button>
+      <button @click="exportQuadrantSubmissionSources" class="export-btn bg-green-600 hover:bg-green-700 ml-2">
+        📈 Export Quadrant Submission Sources
+      </button>
+      <button @click="exportQuadrantDistributionCharts" class="export-btn bg-orange-600 hover:bg-orange-700 ml-2">
+        📉 Export Quadrant Distribution Charts
+      </button>
+      <button @click="exportTotalAssessments" class="export-btn bg-red-600 hover:bg-red-700 ml-2">
+        🎯 Export Total Assessments
+      </button>
+    </div>
+  </div>
   
   <!-- Quadrant Cards - COMPLETELY SEPARATE CONTAINER -->
   <div class="quadrant-cards-container mb-8">
@@ -681,6 +714,11 @@
   <!-- Combined Breakdown - COMPLETELY SEPARATE CONTAINER -->
   <div class="breakdown-container">
     <h4>📋 Combined Quadrant Breakdown</h4>
+    <div class="export-section mt-4 mb-4">
+      <button @click="exportCombinedQuadrantBreakdown" class="export-btn bg-blue-600 hover:bg-blue-700">
+        📥 Export Combined Quadrant Breakdown
+      </button>
+    </div>
     <div class="breakdown-table">
       <table>
         <thead>
@@ -714,6 +752,12 @@
   <p class="text-sm text-gray-600 mb-6">
     Percentage breakdown of which survey types contributed to each quadrant
   </p>
+  
+  <div class="export-section mt-4 mb-4">
+    <button @click="exportQuadrantSubmissionSources" class="export-btn bg-green-600 hover:bg-green-700">
+      📥 Export Quadrant Submission Sources
+    </button>
+  </div>
   
   <div class="submissions-table">
     <table>
@@ -765,6 +809,12 @@
 <div class="charts-section mt-8">
   <h4>📈 Quadrant Distribution Charts</h4>
   <p class="text-sm text-gray-600 mb-6">Visual breakdown of quadrant assessments per HR item</p>
+  
+  <div class="export-section mt-4 mb-4">
+    <button @click="exportQuadrantDistributionCharts" class="export-btn bg-orange-600 hover:bg-orange-700">
+      📥 Export Quadrant Distribution Charts
+    </button>
+  </div>
   
   <!-- Charts Grid -->
   <div class="charts-grid">
@@ -932,6 +982,7 @@
 
 <script>
 import axios from "@/axios";
+import * as XLSX from 'xlsx';
 
 export default {
   name: "ResultsDashboard",
@@ -1056,7 +1107,49 @@ export default {
             { text: "HR6.2 Employee Relations" },
             { text: "HR6.3 Workplace Programs" },
             { text: "HR6.4 Industrial Relations" }
-          ]
+          ],
+          // Mapping for User Survey to handle missing questions
+          hrMappings: {
+            hr1: {
+              0: 'HR1.1',  // HR1.1 Management & Initiatives
+              1: 'HR1.4',  // HR1.2 in survey is actually HR1.4 (HRIS/AI)
+              2: 'HR1.5',  // HR1.3 in survey is actually HR1.5 (Safety & Health)
+              3: 'HR1.6'   // HR1.4 in survey is actually HR1.6 (Crisis Management)
+            },
+            hr2: {
+              0: 'HR2.1',
+              1: 'HR2.2'
+            },
+            hr3: {
+              0: 'HR3.1',  // HR3.1 Workforce Planning
+              1: 'HR3.2',  // HR3.2 Sourcing
+              2: 'HR3.4',  // HR3.3 in survey is actually HR3.4 (Recruitment Process)
+              3: 'HR3.5',  // HR3.4 in survey is actually HR3.5 (Pre-selection Checks)
+              4: 'HR3.6',  // HR3.5 in survey is actually HR3.6 (Turn-around-Time)
+              5: 'HR3.7',  // HR3.6 in survey is actually HR3.7 (Onboarding)
+              6: 'HR3.8',  // HR3.7 in survey is actually HR3.8 (Career Development)
+              7: 'HR3.9'   // HR3.8 in survey is actually HR3.9 (Headcount Reporting)
+            },
+            hr4: {
+              0: 'HR4.1',
+              1: 'HR4.2',
+              2: 'HR4.3',
+              3: 'HR4.4',
+              4: 'HR4.5',
+              5: 'HR4.6'
+            },
+            hr5: {
+              0: 'HR5.1',  // HR5.1 Training Administration
+              1: 'HR5.3',  // HR5.2 in survey is actually HR5.3 (Training Evaluation)
+              2: 'HR5.4'   // HR5.3 in survey is actually HR5.4 (Knowledge Management)
+            },
+            hr6: {
+              0: 'HR6.1',  // HR6.1 Manager Relationship
+              1: 'HR6.2',  // HR6.2 Employee Relations
+              2: 'HR6.3',  // HR6.3 Workplace Programs
+              3: 'HR6.4'   // HR6.4 Industrial Relations
+            }
+          }
         },
         { 
           key: "quadrant", 
@@ -1071,7 +1164,7 @@ export default {
       responses: [],
       selectedResponse: null,
       fetchError: null,
-      allResponses: [] // For combined quadrant analysis
+      allResponses: []
     };
   },
   computed: {
@@ -1097,7 +1190,7 @@ export default {
       return this.activeTab !== 'management';
     },
     showObstaclesColumn() {
-      return true; // All surveys have obstacles
+      return true;
     },
     showSuggestionsColumn() {
       return this.activeTab === 'survey';
@@ -1106,13 +1199,12 @@ export default {
       return this.activeTab !== 'survey';
     },
     basicHeaders() {
-      let headers = 5; // Name + Assessment Date + 3 dynamic columns
+      let headers = 5;
       if (!this.showPositionColumn) headers--;
       if (!this.showDepartmentColumn) headers--;
       if (!this.showDateJoinedColumn) headers--;
       return headers;
     },
-    // Quadrant Analysis Computed Properties
     quadrantData() {
       return this.calculateQuadrantData(this.responses);
     },
@@ -1121,6 +1213,903 @@ export default {
     }
   },
   methods: {
+    // 1. Export Combined Quadrant Analysis (Individual)
+    exportCombinedQuadrantAnalysis() {
+      try {
+        const data = [];
+        const headers = [
+          'HR Item',
+          'Assigned Quadrant',
+          'Q1: Fix & Improve',
+          'Q2: Maintain & Sustain',
+          'Q3: Leave Alone',
+          'Q4: Review to Maintain or Abolish',
+          'Total Assessments'
+        ];
+        
+        data.push(headers);
+        
+        const allHRItems = this.getAllCombinedHRItems();
+        allHRItems.forEach(hrCode => {
+          const counts = this.combinedQuadrantData[hrCode] || { q1: 0, q2: 0, q3: 0, q4: 0 };
+          const assignedQuadrant = this.getCombinedFinalQuadrant(hrCode) || 'Unassigned';
+          const quadrantDisplay = {
+            'q1': 'Q1: Fix & Improve',
+            'q2': 'Q2: Maintain & Sustain',
+            'q3': 'Q3: Leave Alone',
+            'q4': 'Q4: Review to Maintain or Abolish',
+            'Unassigned': 'Unassigned'
+          }[assignedQuadrant];
+          
+          data.push([
+            hrCode,
+            quadrantDisplay,
+            counts.q1 || 0,
+            counts.q2 || 0,
+            counts.q3 || 0,
+            counts.q4 || 0,
+            (counts.q1 || 0) + (counts.q2 || 0) + (counts.q3 || 0) + (counts.q4 || 0)
+          ]);
+        });
+        
+        this.exportToExcel(data, 'Combined_Quadrant_Analysis');
+        
+      } catch (error) {
+        console.error('Error exporting combined quadrant analysis:', error);
+        alert('Error exporting combined quadrant analysis: ' + error.message);
+      }
+    },
+
+    // 2. Export Combined Quadrant Breakdown (Individual)
+    exportCombinedQuadrantBreakdown() {
+      try {
+        const data = [];
+        const headers = [
+          'HR Item',
+          'Q1 Count',
+          'Q2 Count',
+          'Q3 Count',
+          'Q4 Count',
+          'Total Assessments',
+          'Q1 Percentage',
+          'Q2 Percentage',
+          'Q3 Percentage',
+          'Q4 Percentage'
+        ];
+        
+        data.push(headers);
+        
+        const allHRItems = this.getAllCombinedHRItems();
+        allHRItems.forEach(hrCode => {
+          const counts = this.combinedQuadrantData[hrCode] || { q1: 0, q2: 0, q3: 0, q4: 0 };
+          const total = (counts.q1 || 0) + (counts.q2 || 0) + (counts.q3 || 0) + (counts.q4 || 0);
+          
+          data.push([
+            hrCode,
+            counts.q1 || 0,
+            counts.q2 || 0,
+            counts.q3 || 0,
+            counts.q4 || 0,
+            total,
+            total > 0 ? ((counts.q1 || 0) / total * 100).toFixed(2) + '%' : '0%',
+            total > 0 ? ((counts.q2 || 0) / total * 100).toFixed(2) + '%' : '0%',
+            total > 0 ? ((counts.q3 || 0) / total * 100).toFixed(2) + '%' : '0%',
+            total > 0 ? ((counts.q4 || 0) / total * 100).toFixed(2) + '%' : '0%'
+          ]);
+        });
+        
+        this.exportToExcel(data, 'Combined_Quadrant_Breakdown');
+        
+      } catch (error) {
+        console.error('Error exporting combined quadrant breakdown:', error);
+        alert('Error exporting combined quadrant breakdown: ' + error.message);
+      }
+    },
+
+    // 3. Export Quadrant Submission Sources (Individual)
+    exportQuadrantSubmissionSources() {
+      try {
+        const data = [];
+        const headers = [
+          'Quadrant',
+          'Description',
+          'Management Assessment',
+          'HR Self-Assessment',
+          'User Survey',
+          'Total Assessments',
+          'Management %',
+          'HR %',
+          'User Survey %'
+        ];
+        
+        data.push(headers);
+        
+        const quadrantSourceData = this.calculateQuadrantSourceData();
+        const quadrants = ['q1', 'q2', 'q3', 'q4'];
+        
+        quadrants.forEach(quadrant => {
+          const sourceData = quadrantSourceData[quadrant];
+          const total = sourceData.total || 0;
+          
+          data.push([
+            this.getQuadrantDisplayName(quadrant),
+            this.getQuadrantDescription(quadrant),
+            sourceData.management || 0,
+            sourceData.hr || 0,
+            sourceData.survey || 0,
+            total,
+            total > 0 ? ((sourceData.management || 0) / total * 100).toFixed(2) + '%' : '0%',
+            total > 0 ? ((sourceData.hr || 0) / total * 100).toFixed(2) + '%' : '0%',
+            total > 0 ? ((sourceData.survey || 0) / total * 100).toFixed(2) + '%' : '0%'
+          ]);
+        });
+        
+        // Add totals row
+        const overallTotal = this.getOverallTotalAssessments();
+        data.push([
+          'TOTAL',
+          '',
+          this.getTotalSourceCount('management'),
+          this.getTotalSourceCount('hr'),
+          this.getTotalSourceCount('survey'),
+          overallTotal,
+          overallTotal > 0 ? (this.getTotalSourceCount('management') / overallTotal * 100).toFixed(2) + '%' : '0%',
+          overallTotal > 0 ? (this.getTotalSourceCount('hr') / overallTotal * 100).toFixed(2) + '%' : '0%',
+          overallTotal > 0 ? (this.getTotalSourceCount('survey') / overallTotal * 100).toFixed(2) + '%' : '0%'
+        ]);
+        
+        this.exportToExcel(data, 'Quadrant_Submission_Sources');
+        
+      } catch (error) {
+        console.error('Error exporting quadrant submission sources:', error);
+        alert('Error exporting quadrant submission sources: ' + error.message);
+      }
+    },
+
+    // 4. Export Quadrant Distribution Charts (Individual)
+    exportQuadrantDistributionCharts() {
+      try {
+        const data = [];
+        const headers = [
+          'HR Item',
+          'Q1: Fix & Improve Count',
+          'Q2: Maintain & Sustain Count',
+          'Q3: Leave Alone Count',
+          'Q4: Review to Maintain or Abolish Count',
+          'Q1 Percentage of Max',
+          'Q2 Percentage of Max',
+          'Q3 Percentage of Max',
+          'Q4 Percentage of Max'
+        ];
+        
+        data.push(headers);
+        
+        const maxValues = {
+          q1: this.getMaxQ1Value(),
+          q2: this.getMaxQ2Value(),
+          q3: this.getMaxQ3Value(),
+          q4: this.getMaxQ4Value()
+        };
+        
+        const allHRItems = this.getAllCombinedHRItems();
+        allHRItems.forEach(hrCode => {
+          const counts = this.combinedQuadrantData[hrCode] || { q1: 0, q2: 0, q3: 0, q4: 0 };
+          
+          data.push([
+            hrCode,
+            counts.q1 || 0,
+            counts.q2 || 0,
+            counts.q3 || 0,
+            counts.q4 || 0,
+            maxValues.q1 > 0 ? ((counts.q1 || 0) / maxValues.q1 * 100).toFixed(2) + '%' : '0%',
+            maxValues.q2 > 0 ? ((counts.q2 || 0) / maxValues.q2 * 100).toFixed(2) + '%' : '0%',
+            maxValues.q3 > 0 ? ((counts.q3 || 0) / maxValues.q3 * 100).toFixed(2) + '%' : '0%',
+            maxValues.q4 > 0 ? ((counts.q4 || 0) / maxValues.q4 * 100).toFixed(2) + '%' : '0%'
+          ]);
+        });
+        
+        this.exportToExcel(data, 'Quadrant_Distribution_Charts');
+        
+      } catch (error) {
+        console.error('Error exporting quadrant distribution charts:', error);
+        alert('Error exporting quadrant distribution charts: ' + error.message);
+      }
+    },
+
+    // 5. Export Total Assessments per HR Item (Individual)
+    exportTotalAssessments() {
+      try {
+        const data = [];
+        const headers = [
+          'HR Item',
+          'Total Assessments',
+          'Q1 Count',
+          'Q2 Count',
+          'Q3 Count',
+          'Q4 Count',
+          'Q1 Percentage of Total',
+          'Q2 Percentage of Total',
+          'Q3 Percentage of Total',
+          'Q4 Percentage of Total'
+        ];
+        
+        data.push(headers);
+        
+        const allHRItems = this.getAllCombinedHRItems();
+        allHRItems.forEach(hrCode => {
+          const counts = this.combinedQuadrantData[hrCode] || { q1: 0, q2: 0, q3: 0, q4: 0 };
+          const total = this.getCombinedTotalAssessments(hrCode);
+          
+          data.push([
+            hrCode,
+            total,
+            counts.q1 || 0,
+            counts.q2 || 0,
+            counts.q3 || 0,
+            counts.q4 || 0,
+            total > 0 ? ((counts.q1 || 0) / total * 100).toFixed(2) + '%' : '0%',
+            total > 0 ? ((counts.q2 || 0) / total * 100).toFixed(2) + '%' : '0%',
+            total > 0 ? ((counts.q3 || 0) / total * 100).toFixed(2) + '%' : '0%',
+            total > 0 ? ((counts.q4 || 0) / total * 100).toFixed(2) + '%' : '0%'
+          ]);
+        });
+        
+        this.exportToExcel(data, 'Total_Assessments_per_HR_Item');
+        
+      } catch (error) {
+        console.error('Error exporting total assessments:', error);
+        alert('Error exporting total assessments: ' + error.message);
+      }
+    },
+
+    // 6. Export Quadrant Breakdown (for individual survey tabs)
+    exportQuadrantBreakdown() {
+      try {
+        const data = [];
+        const headers = [
+          'HR Item',
+          'Q1 Count',
+          'Q2 Count',
+          'Q3 Count',
+          'Q4 Count',
+          'Total Assessments',
+          'Q1 Percentage',
+          'Q2 Percentage',
+          'Q3 Percentage',
+          'Q4 Percentage'
+        ];
+        
+        data.push(headers);
+        
+        const allHRItems = this.getAllHRItems();
+        allHRItems.forEach(hrCode => {
+          const counts = this.quadrantData[hrCode] || { q1: 0, q2: 0, q3: 0, q4: 0 };
+          const total = this.getTotalAssessments(hrCode);
+          
+          data.push([
+            hrCode,
+            counts.q1 || 0,
+            counts.q2 || 0,
+            counts.q3 || 0,
+            counts.q4 || 0,
+            total,
+            total > 0 ? ((counts.q1 || 0) / total * 100).toFixed(2) + '%' : '0%',
+            total > 0 ? ((counts.q2 || 0) / total * 100).toFixed(2) + '%' : '0%',
+            total > 0 ? ((counts.q3 || 0) / total * 100).toFixed(2) + '%' : '0%',
+            total > 0 ? ((counts.q4 || 0) / total * 100).toFixed(2) + '%' : '0%'
+          ]);
+        });
+        
+        this.exportToExcel(data, `${this.currentTabLabel}_Quadrant_Breakdown`);
+        
+      } catch (error) {
+        console.error('Error exporting quadrant breakdown:', error);
+        alert('Error exporting quadrant breakdown: ' + error.message);
+      }
+    },
+
+    // Helper method to export data to Excel
+    exportToExcel(data, sheetName) {
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.aoa_to_sheet(data);
+      XLSX.utils.book_append_sheet(wb, ws, sheetName);
+      
+      // Auto-size columns
+      const wscols = [];
+      if (data.length > 0) {
+        for (let i = 0; i < data[0].length; i++) {
+          wscols.push({ wch: 20 });
+        }
+        ws['!cols'] = wscols;
+      }
+      
+      const fileName = `${sheetName}_${new Date().toISOString().split('T')[0]}.xlsx`;
+      XLSX.writeFile(wb, fileName);
+      
+      alert(`${sheetName} exported successfully!`);
+    },
+
+    // 7. Combined export (all in one Excel file with multiple sheets)
+    exportQuadrantAnalysisToCSV() {
+      try {
+        const wb = XLSX.utils.book_new();
+        
+        // Sheet 1: Combined Quadrant Analysis
+        const combinedData = [];
+        const headers1 = [
+          'HR Item',
+          'Assigned Quadrant',
+          'Q1: Fix & Improve',
+          'Q2: Maintain & Sustain',
+          'Q3: Leave Alone',
+          'Q4: Review to Maintain or Abolish',
+          'Total Assessments'
+        ];
+        combinedData.push(headers1);
+        const allHRItems = this.getAllCombinedHRItems();
+        allHRItems.forEach(hrCode => {
+          const counts = this.combinedQuadrantData[hrCode] || { q1: 0, q2: 0, q3: 0, q4: 0 };
+          const assignedQuadrant = this.getCombinedFinalQuadrant(hrCode) || 'Unassigned';
+          const quadrantDisplay = {
+            'q1': 'Q1: Fix & Improve',
+            'q2': 'Q2: Maintain & Sustain',
+            'q3': 'Q3: Leave Alone',
+            'q4': 'Q4: Review to Maintain or Abolish',
+            'Unassigned': 'Unassigned'
+          }[assignedQuadrant];
+          
+          combinedData.push([
+            hrCode,
+            quadrantDisplay,
+            counts.q1 || 0,
+            counts.q2 || 0,
+            counts.q3 || 0,
+            counts.q4 || 0,
+            (counts.q1 || 0) + (counts.q2 || 0) + (counts.q3 || 0) + (counts.q4 || 0)
+          ]);
+        });
+        const ws1 = XLSX.utils.aoa_to_sheet(combinedData);
+        XLSX.utils.book_append_sheet(wb, ws1, 'Combined Quadrant Analysis');
+        
+        // Sheet 2: Combined Quadrant Breakdown
+        const breakdownData = [];
+        const headers2 = [
+          'HR Item',
+          'Q1 Count',
+          'Q2 Count',
+          'Q3 Count',
+          'Q4 Count',
+          'Total Assessments',
+          'Q1 Percentage',
+          'Q2 Percentage',
+          'Q3 Percentage',
+          'Q4 Percentage'
+        ];
+        breakdownData.push(headers2);
+        allHRItems.forEach(hrCode => {
+          const counts = this.combinedQuadrantData[hrCode] || { q1: 0, q2: 0, q3: 0, q4: 0 };
+          const total = (counts.q1 || 0) + (counts.q2 || 0) + (counts.q3 || 0) + (counts.q4 || 0);
+          
+          breakdownData.push([
+            hrCode,
+            counts.q1 || 0,
+            counts.q2 || 0,
+            counts.q3 || 0,
+            counts.q4 || 0,
+            total,
+            total > 0 ? ((counts.q1 || 0) / total * 100).toFixed(2) + '%' : '0%',
+            total > 0 ? ((counts.q2 || 0) / total * 100).toFixed(2) + '%' : '0%',
+            total > 0 ? ((counts.q3 || 0) / total * 100).toFixed(2) + '%' : '0%',
+            total > 0 ? ((counts.q4 || 0) / total * 100).toFixed(2) + '%' : '0%'
+          ]);
+        });
+        const ws2 = XLSX.utils.aoa_to_sheet(breakdownData);
+        XLSX.utils.book_append_sheet(wb, ws2, 'Combined Quadrant Breakdown');
+        
+        // Sheet 3: Quadrant Submission Sources
+        const sourceData = [];
+        const headers3 = [
+          'Quadrant',
+          'Description',
+          'Management Assessment',
+          'HR Self-Assessment',
+          'User Survey',
+          'Total Assessments',
+          'Management %',
+          'HR %',
+          'User Survey %'
+        ];
+        sourceData.push(headers3);
+        const quadrantSourceData = this.calculateQuadrantSourceData();
+        const quadrants = ['q1', 'q2', 'q3', 'q4'];
+        quadrants.forEach(quadrant => {
+          const data = quadrantSourceData[quadrant];
+          const total = data.total || 0;
+          
+          sourceData.push([
+            this.getQuadrantDisplayName(quadrant),
+            this.getQuadrantDescription(quadrant),
+            data.management || 0,
+            data.hr || 0,
+            data.survey || 0,
+            total,
+            total > 0 ? ((data.management || 0) / total * 100).toFixed(2) + '%' : '0%',
+            total > 0 ? ((data.hr || 0) / total * 100).toFixed(2) + '%' : '0%',
+            total > 0 ? ((data.survey || 0) / total * 100).toFixed(2) + '%' : '0%'
+          ]);
+        });
+        const overallTotal = this.getOverallTotalAssessments();
+        sourceData.push([
+          'TOTAL',
+          '',
+          this.getTotalSourceCount('management'),
+          this.getTotalSourceCount('hr'),
+          this.getTotalSourceCount('survey'),
+          overallTotal,
+          overallTotal > 0 ? (this.getTotalSourceCount('management') / overallTotal * 100).toFixed(2) + '%' : '0%',
+          overallTotal > 0 ? (this.getTotalSourceCount('hr') / overallTotal * 100).toFixed(2) + '%' : '0%',
+          overallTotal > 0 ? (this.getTotalSourceCount('survey') / overallTotal * 100).toFixed(2) + '%' : '0%'
+        ]);
+        const ws3 = XLSX.utils.aoa_to_sheet(sourceData);
+        XLSX.utils.book_append_sheet(wb, ws3, 'Quadrant Submission Sources');
+        
+        // Sheet 4: Quadrant Distribution Charts
+        const chartData = [];
+        const headers4 = [
+          'HR Item',
+          'Q1: Fix & Improve Count',
+          'Q2: Maintain & Sustain Count',
+          'Q3: Leave Alone Count',
+          'Q4: Review to Maintain or Abolish Count',
+          'Q1 Percentage of Max',
+          'Q2 Percentage of Max',
+          'Q3 Percentage of Max',
+          'Q4 Percentage of Max'
+        ];
+        chartData.push(headers4);
+        const maxValues = {
+          q1: this.getMaxQ1Value(),
+          q2: this.getMaxQ2Value(),
+          q3: this.getMaxQ3Value(),
+          q4: this.getMaxQ4Value()
+        };
+        allHRItems.forEach(hrCode => {
+          const counts = this.combinedQuadrantData[hrCode] || { q1: 0, q2: 0, q3: 0, q4: 0 };
+          
+          chartData.push([
+            hrCode,
+            counts.q1 || 0,
+            counts.q2 || 0,
+            counts.q3 || 0,
+            counts.q4 || 0,
+            maxValues.q1 > 0 ? ((counts.q1 || 0) / maxValues.q1 * 100).toFixed(2) + '%' : '0%',
+            maxValues.q2 > 0 ? ((counts.q2 || 0) / maxValues.q2 * 100).toFixed(2) + '%' : '0%',
+            maxValues.q3 > 0 ? ((counts.q3 || 0) / maxValues.q3 * 100).toFixed(2) + '%' : '0%',
+            maxValues.q4 > 0 ? ((counts.q4 || 0) / maxValues.q4 * 100).toFixed(2) + '%' : '0%'
+          ]);
+        });
+        const ws4 = XLSX.utils.aoa_to_sheet(chartData);
+        XLSX.utils.book_append_sheet(wb, ws4, 'Quadrant Distribution Charts');
+        
+        // Sheet 5: Total Assessments per HR Item
+        const totalData = [];
+        const headers5 = [
+          'HR Item',
+          'Total Assessments',
+          'Q1 Count',
+          'Q2 Count',
+          'Q3 Count',
+          'Q4 Count',
+          'Q1 Percentage of Total',
+          'Q2 Percentage of Total',
+          'Q3 Percentage of Total',
+          'Q4 Percentage of Total'
+        ];
+        totalData.push(headers5);
+        allHRItems.forEach(hrCode => {
+          const counts = this.combinedQuadrantData[hrCode] || { q1: 0, q2: 0, q3: 0, q4: 0 };
+          const total = this.getCombinedTotalAssessments(hrCode);
+          
+          totalData.push([
+            hrCode,
+            total,
+            counts.q1 || 0,
+            counts.q2 || 0,
+            counts.q3 || 0,
+            counts.q4 || 0,
+            total > 0 ? ((counts.q1 || 0) / total * 100).toFixed(2) + '%' : '0%',
+            total > 0 ? ((counts.q2 || 0) / total * 100).toFixed(2) + '%' : '0%',
+            total > 0 ? ((counts.q3 || 0) / total * 100).toFixed(2) + '%' : '0%',
+            total > 0 ? ((counts.q4 || 0) / total * 100).toFixed(2) + '%' : '0%'
+          ]);
+        });
+        const ws5 = XLSX.utils.aoa_to_sheet(totalData);
+        XLSX.utils.book_append_sheet(wb, ws5, 'Total Assessments per HR Item');
+        
+        // Sheet 6: Summary
+        const summaryData = [];
+        const headers6 = ['Summary Metric', 'Value', 'Details'];
+        summaryData.push(headers6);
+        summaryData.push(['Total HR Items Assessed', allHRItems.length, 'Number of unique HR items']);
+        summaryData.push(['Total Assessments', this.getOverallTotalAssessments(), 'Sum of all quadrant assessments']);
+        summaryData.push(['Total Management Assessments', this.getTotalSourceCount('management'), 'From Management Assessment survey']);
+        summaryData.push(['Total HR Self-Assessments', this.getTotalSourceCount('hr'), 'From HR Self-Assessment survey']);
+        summaryData.push(['Total User Surveys', this.getTotalSourceCount('survey'), 'From User Survey']);
+        quadrants.forEach(quadrant => {
+          const data = quadrantSourceData[quadrant];
+          summaryData.push([
+            this.getQuadrantDisplayName(quadrant),
+            data.total || 0,
+            this.getQuadrantDescription(quadrant)
+          ]);
+        });
+        summaryData.push(['', '', '']);
+        summaryData.push(['TOP ITEMS PER QUADRANT', '', '']);
+        quadrants.forEach(quadrant => {
+          const items = this.getCombinedQuadrantItems(quadrant);
+          if (items.length > 0) {
+            summaryData.push([
+              this.getQuadrantDisplayName(quadrant),
+              items.length + ' items',
+              'Items: ' + items.join(', ')
+            ]);
+          }
+        });
+        const ws6 = XLSX.utils.aoa_to_sheet(summaryData);
+        XLSX.utils.book_append_sheet(wb, ws6, 'Summary');
+        
+        const fileName = `Quadrant_Analysis_Full_${new Date().toISOString().split('T')[0]}.xlsx`;
+        XLSX.writeFile(wb, fileName);
+        
+        alert('Complete quadrant analysis exported successfully!');
+        
+      } catch (error) {
+        console.error('Error exporting quadrant analysis:', error);
+        alert('Error exporting quadrant analysis: ' + error.message);
+      }
+    },
+
+    // Helper method to get actual HR code based on survey type
+    getActualHRCode(surveyType, section, index) {
+      if (surveyType === 'survey') {
+        const surveyTab = this.tabs.find(t => t.key === 'survey');
+        if (surveyTab?.hrMappings?.[section]?.[index] !== undefined) {
+          return surveyTab.hrMappings[section][index];
+        }
+      }
+      const sectionNum = section.replace('hr', '');
+      return `HR${sectionNum}.${index + 1}`;
+    },
+
+    // Main quadrant calculation method
+    calculateQuadrantData(responses) {
+      const quadrantItems = {};
+      
+      if (!responses || responses.length === 0) {
+        return quadrantItems;
+      }
+      
+      responses.forEach(response => {
+        const surveyType = response.surveyType || 
+          (response.managerName && !response.assessorName && !response.name ? 'management' :
+           response.assessorName && !response.managerName && !response.name ? 'hr' :
+           response.name && !response.managerName && !response.assessorName ? 'survey' : 'unknown');
+        
+        ['hr1', 'hr2', 'hr3', 'hr4', 'hr5', 'hr6'].forEach(section => {
+          const sectionData = response[section];
+          if (sectionData && Array.isArray(sectionData)) {
+            sectionData.forEach((item, index) => {
+              if (!item) return;
+              
+              const hrCode = this.getActualHRCode(surveyType, section, index);
+              
+              if (!quadrantItems[hrCode]) {
+                quadrantItems[hrCode] = { q1: 0, q2: 0, q3: 0, q4: 0 };
+              }
+              
+              const importance = item.importance;
+              const implementation = item.implementation;
+              
+              if (importance && implementation && 
+                  importance !== 'NA' && implementation !== 'NA') {
+                
+                const impNum = parseInt(importance);
+                const implNum = parseInt(implementation);
+                
+                if (isNaN(impNum) || isNaN(implNum)) return;
+                
+                if ((impNum === 3 || impNum === 4) && (implNum === 1 || implNum === 2)) {
+                  quadrantItems[hrCode].q1++;
+                } else if ((impNum === 3 || impNum === 4) && (implNum === 3 || implNum === 4)) {
+                  quadrantItems[hrCode].q2++;
+                } else if ((impNum === 1 || impNum === 2) && (implNum === 1 || implNum === 2)) {
+                  quadrantItems[hrCode].q3++;
+                } else if ((impNum === 1 || impNum === 2) && (implNum === 3 || implNum === 4)) {
+                  quadrantItems[hrCode].q4++;
+                }
+              }
+            });
+          }
+        });
+      });
+      
+      return quadrantItems;
+    },
+
+    // Get final quadrant for an HR item
+    getFinalQuadrant(hrCode) {
+      const counts = this.quadrantData[hrCode];
+      if (!counts) return null;
+      
+      const maxCount = Math.max(counts.q1, counts.q2, counts.q3, counts.q4);
+      if (maxCount === 0) return null;
+      
+      if (counts.q1 === maxCount) return 'q1';
+      if (counts.q2 === maxCount) return 'q2';
+      if (counts.q3 === maxCount) return 'q3';
+      return 'q4';
+    },
+
+    getCombinedFinalQuadrant(hrCode) {
+      const counts = this.combinedQuadrantData[hrCode];
+      if (!counts) return null;
+      
+      const maxCount = Math.max(counts.q1, counts.q2, counts.q3, counts.q4);
+      if (maxCount === 0) return null;
+      
+      if (counts.q1 === maxCount) return 'q1';
+      if (counts.q2 === maxCount) return 'q2';
+      if (counts.q3 === maxCount) return 'q3';
+      return 'q4';
+    },
+
+    getQuadrantItems(quadrant) {
+      const items = [];
+      for (const hrCode in this.quadrantData) {
+        if (this.getFinalQuadrant(hrCode) === quadrant) {
+          items.push(hrCode);
+        }
+      }
+      return items.sort();
+    },
+
+    getCombinedQuadrantItems(quadrant) {
+      const items = [];
+      for (const hrCode in this.combinedQuadrantData) {
+        if (this.getCombinedFinalQuadrant(hrCode) === quadrant) {
+          items.push(hrCode);
+        }
+      }
+      return items.sort();
+    },
+
+    getItemCount(hrCode) {
+      const counts = this.quadrantData[hrCode];
+      if (!counts) return 0;
+      return counts.q1 + counts.q2 + counts.q3 + counts.q4;
+    },
+
+    getCombinedItemCount(hrCode) {
+      const counts = this.combinedQuadrantData[hrCode];
+      if (!counts) return 0;
+      return counts.q1 + counts.q2 + counts.q3 + counts.q4;
+    },
+
+    getAllHRItems() {
+      return Object.keys(this.quadrantData).sort();
+    },
+
+    getAllCombinedHRItems() {
+      return Object.keys(this.combinedQuadrantData).sort();
+    },
+
+    getTotalAssessments(hrCode) {
+      const counts = this.quadrantData[hrCode];
+      if (!counts) return 0;
+      return counts.q1 + counts.q2 + counts.q3 + counts.q4;
+    },
+
+    getCombinedTotalAssessments(hrCode) {
+      const counts = this.combinedQuadrantData[hrCode];
+      if (!counts) return 0;
+      return counts.q1 + counts.q2 + counts.q3 + counts.q4;
+    },
+
+    // Chart helper methods
+    getChartPercentage(value, maxValue) {
+      if (!maxValue || maxValue === 0) return 0;
+      return (value / maxValue) * 100;
+    },
+
+    getMaxQ1Value() {
+      let max = 0;
+      for (const hrCode in this.combinedQuadrantData) {
+        const value = this.combinedQuadrantData[hrCode]?.q1 || 0;
+        if (value > max) max = value;
+      }
+      return max;
+    },
+
+    getMaxQ2Value() {
+      let max = 0;
+      for (const hrCode in this.combinedQuadrantData) {
+        const value = this.combinedQuadrantData[hrCode]?.q2 || 0;
+        if (value > max) max = value;
+      }
+      return max;
+    },
+
+    getMaxQ3Value() {
+      let max = 0;
+      for (const hrCode in this.combinedQuadrantData) {
+        const value = this.combinedQuadrantData[hrCode]?.q3 || 0;
+        if (value > max) max = value;
+      }
+      return max;
+    },
+
+    getMaxQ4Value() {
+      let max = 0;
+      for (const hrCode in this.combinedQuadrantData) {
+        const value = this.combinedQuadrantData[hrCode]?.q4 || 0;
+        if (value > max) max = value;
+      }
+      return max;
+    },
+
+    getMaxTotalValue() {
+      let max = 0;
+      for (const hrCode in this.combinedQuadrantData) {
+        const value = this.getCombinedTotalAssessments(hrCode);
+        if (value > max) max = value;
+      }
+      return max;
+    },
+
+    // Quadrant chart data helpers
+    getQuadrantChartData(hrCode, quadrantData) {
+      const counts = quadrantData[hrCode];
+      if (!counts) return { q1: 0, q2: 0, q3: 0, q4: 0, total: 0 };
+      
+      return {
+        q1: counts.q1 || 0,
+        q2: counts.q2 || 0,
+        q3: counts.q3 || 0,
+        q4: counts.q4 || 0,
+        total: (counts.q1 || 0) + (counts.q2 || 0) + (counts.q3 || 0) + (counts.q4 || 0)
+      };
+    },
+
+    getQuadrantChartPercentage(value, total) {
+      if (!total || total === 0) return 0;
+      return (value / total) * 100;
+    },
+
+    // Quadrant source data
+    calculateQuadrantSourceData() {
+      const quadrantSourceData = {
+        q1: { management: 0, hr: 0, survey: 0, total: 0 },
+        q2: { management: 0, hr: 0, survey: 0, total: 0 },
+        q3: { management: 0, hr: 0, survey: 0, total: 0 },
+        q4: { management: 0, hr: 0, survey: 0, total: 0 }
+      };
+      
+      if (!this.allResponses || this.allResponses.length === 0) {
+        return quadrantSourceData;
+      }
+      
+      this.allResponses.forEach(response => {
+        const surveyType = response.surveyType || 
+          (response.managerName && !response.assessorName && !response.name ? 'management' :
+           response.assessorName && !response.managerName && !response.name ? 'hr' :
+           response.name && !response.managerName && !response.assessorName ? 'survey' : 'unknown');
+        
+        ['hr1', 'hr2', 'hr3', 'hr4', 'hr5', 'hr6'].forEach(section => {
+          const sectionData = response[section];
+          if (sectionData && Array.isArray(sectionData)) {
+            sectionData.forEach((item, index) => {
+              if (!item) return;
+              
+              const importance = item.importance;
+              const implementation = item.implementation;
+              
+              if (importance && implementation && 
+                  importance !== 'NA' && implementation !== 'NA') {
+                
+                const impNum = parseInt(importance);
+                const implNum = parseInt(implementation);
+                
+                if (isNaN(impNum) || isNaN(implNum)) return;
+                
+                let quadrant = null;
+                if ((impNum === 3 || impNum === 4) && (implNum === 1 || implNum === 2)) {
+                  quadrant = 'q1';
+                } else if ((impNum === 3 || impNum === 4) && (implNum === 3 || implNum === 4)) {
+                  quadrant = 'q2';
+                } else if ((impNum === 1 || impNum === 2) && (implNum === 1 || implNum === 2)) {
+                  quadrant = 'q3';
+                } else if ((impNum === 1 || impNum === 2) && (implNum === 3 || implNum === 4)) {
+                  quadrant = 'q4';
+                }
+                
+                if (quadrant && surveyType && quadrantSourceData[quadrant]) {
+                  quadrantSourceData[quadrant][surveyType]++;
+                  quadrantSourceData[quadrant].total++;
+                }
+              }
+            });
+          }
+        });
+      });
+      
+      return quadrantSourceData;
+    },
+
+    getQuadrantDisplayName(quadrant) {
+      const names = {
+        q1: 'Q1: Fix & Improve',
+        q2: 'Q2: Maintain & Sustain',
+        q3: 'Q3: Leave Alone',
+        q4: 'Q4: Review to Maintain or Abolish'
+      };
+      return names[quadrant] || quadrant;
+    },
+
+    getQuadrantDescription(quadrant) {
+      const descs = {
+        q1: 'High Importance, Low Implementation',
+        q2: 'High Importance, High Implementation',
+        q3: 'Low Importance, Low Implementation',
+        q4: 'Low Importance, High Implementation'
+      };
+      return descs[quadrant] || '';
+    },
+
+    getQuadrantSourceCount(quadrant, surveyType) {
+      const sourceData = this.calculateQuadrantSourceData();
+      return sourceData[quadrant]?.[surveyType] || 0;
+    },
+
+    getQuadrantTotalAssessments(quadrant) {
+      const sourceData = this.calculateQuadrantSourceData();
+      return sourceData[quadrant]?.total || 0;
+    },
+
+    getQuadrantSourcePercentage(quadrant, surveyType) {
+      const sourceData = this.calculateQuadrantSourceData();
+      const quadrantData = sourceData[quadrant];
+      if (!quadrantData || quadrantData.total === 0) return 0;
+      
+      const count = quadrantData[surveyType] || 0;
+      return Math.round((count / quadrantData.total) * 100);
+    },
+
+    getQuadrantPercentageStyle(quadrant, surveyType) {
+      const percentage = this.getQuadrantSourcePercentage(quadrant, surveyType);
+      return {
+        '--percent': `${percentage}%`
+      };
+    },
+
+    getTotalSourceCount(surveyType) {
+      const sourceData = this.calculateQuadrantSourceData();
+      let total = 0;
+      for (const quadrant in sourceData) {
+        total += sourceData[quadrant][surveyType] || 0;
+      }
+      return total;
+    },
+
+    getOverallTotalAssessments() {
+      const sourceData = this.calculateQuadrantSourceData();
+      let total = 0;
+      for (const quadrant in sourceData) {
+        total += sourceData[quadrant].total || 0;
+      }
+      return total;
+    },
+
+    // Basic methods
     setTab(key) {
       this.activeTab = key;
       this.activeStatsSection = "hr1";
@@ -1131,191 +2120,43 @@ export default {
         this.fetchResponses();
       }
     },
-    getPercentageStyle(hrCode, surveyType) {
-  const percentage = this.getSubmissionPercentage(hrCode, surveyType);
-  return {
-    '--percent': `${percentage}%`
-  };
-},
 
-// Add these methods to calculate quadrant-based source data
-calculateQuadrantSourceData() {
-  const quadrantSourceData = {
-    q1: { management: 0, hr: 0, survey: 0, total: 0 },
-    q2: { management: 0, hr: 0, survey: 0, total: 0 },
-    q3: { management: 0, hr: 0, survey: 0, total: 0 },
-    q4: { management: 0, hr: 0, survey: 0, total: 0 }
-  };
-  
-  if (!this.allResponses || this.allResponses.length === 0) {
-    return quadrantSourceData;
-  }
-  
-  this.allResponses.forEach(response => {
-    ['hr1', 'hr2', 'hr3', 'hr4', 'hr5', 'hr6'].forEach(section => {
-      const sectionData = response[section];
-      if (sectionData) {
-        sectionData.forEach((item, index) => {
-          if (item.importance && item.implementation && 
-              item.importance !== 'NA' && item.implementation !== 'NA') {
-            
-            const importance = parseInt(item.importance);
-            const implementation = parseInt(item.implementation);
-            
-            // Determine quadrant
-            let quadrant = null;
-            if ((importance === 3 || importance === 4) && (implementation === 1 || implementation === 2)) {
-              quadrant = 'q1';
-            } else if ((importance === 3 || importance === 4) && (implementation === 3 || implementation === 4)) {
-              quadrant = 'q2';
-            } else if ((importance === 1 || importance === 2) && (implementation === 1 || implementation === 2)) {
-              quadrant = 'q3';
-            } else if ((importance === 1 || importance === 2) && (implementation === 3 || implementation === 4)) {
-              quadrant = 'q4';
-            }
-            
-            if (quadrant) {
-              // Determine survey type
-              const surveyType = response.surveyType || 
-                (response.managerName && !response.assessorName && !response.name ? 'management' :
-                 response.assessorName && !response.managerName && !response.name ? 'hr' :
-                 response.name && !response.managerName && !response.assessorName ? 'survey' : 'unknown');
-              
-              if (surveyType && quadrantSourceData[quadrant]) {
-                quadrantSourceData[quadrant][surveyType]++;
-                quadrantSourceData[quadrant].total++;
-              }
-            }
-          }
-        });
-      }
-    });
-  });
-  
-  return quadrantSourceData;
-},
-
-getQuadrantDisplayName(quadrant) {
-  const names = {
-    q1: 'Q1: Fix & Improve',
-    q2: 'Q2: Maintain & Sustain',
-    q3: 'Q3: Leave Alone',
-    q4: 'Q4: Review to Maintain or Abolish'
-  };
-  return names[quadrant] || quadrant;
-},
-
-getQuadrantDescription(quadrant) {
-  const descs = {
-    q1: 'High Importance, Low Implementation',
-    q2: 'High Importance, High Implementation',
-    q3: 'Low Importance, Low Implementation',
-    q4: 'Low Importance, High Implementation'
-  };
-  return descs[quadrant] || '';
-},
-
-getQuadrantSourceCount(quadrant, surveyType) {
-  const sourceData = this.calculateQuadrantSourceData();
-  return sourceData[quadrant]?.[surveyType] || 0;
-},
-
-getQuadrantTotalAssessments(quadrant) {
-  const sourceData = this.calculateQuadrantSourceData();
-  return sourceData[quadrant]?.total || 0;
-},
-
-getQuadrantSourcePercentage(quadrant, surveyType) {
-  const sourceData = this.calculateQuadrantSourceData();
-  const quadrantData = sourceData[quadrant];
-  if (!quadrantData || quadrantData.total === 0) return 0;
-  
-  const count = quadrantData[surveyType] || 0;
-  return Math.round((count / quadrantData.total) * 100);
-},
-
-getQuadrantPercentageStyle(quadrant, surveyType) {
-  const percentage = this.getQuadrantSourcePercentage(quadrant, surveyType);
-  return {
-    '--percent': `${percentage}%`
-  };
-},
-
-getTotalSourceCount(surveyType) {
-  const sourceData = this.calculateQuadrantSourceData();
-  let total = 0;
-  for (const quadrant in sourceData) {
-    total += sourceData[quadrant][surveyType] || 0;
-  }
-  return total;
-},
-
-getOverallTotalAssessments() {
-  const sourceData = this.calculateQuadrantSourceData();
-  let total = 0;
-  for (const quadrant in sourceData) {
-    total += sourceData[quadrant].total || 0;
-  }
-  return total;
-},
-
-    // Add this method to calculate chart data for a specific HR item in the combined quadrant data
-getQuadrantChartData(hrCode, quadrantData) {
-  const counts = quadrantData[hrCode];
-  if (!counts) return { q1: 0, q2: 0, q3: 0, q4: 0 };
-  
-  return {
-    q1: counts.q1 || 0,
-    q2: counts.q2 || 0,
-    q3: counts.q3 || 0,
-    q4: counts.q4 || 0,
-    total: (counts.q1 || 0) + (counts.q2 || 0) + (counts.q3 || 0) + (counts.q4 || 0)
-  };
-},
-
-// Add this method to get chart percentage
-getQuadrantChartPercentage(value, total) {
-  if (total === 0) return 0;
-  return (value / total) * 100;
-},
     async fetchResponses() {
       this.fetchError = null;
       try {
         const tab = this.tabs.find(t => t.key === this.activeTab);
         const res = await axios.get(tab.url, { headers: { Authorization: `Bearer ${this.token}` } });
-        console.log('Fetched responses:', res.data);
-        this.responses = res.data;
+        this.responses = res.data.map(r => ({ ...r, surveyType: this.activeTab }));
       } catch (err) {
         console.error("Error fetching responses:", err);
         this.handleFetchError(err);
       }
     },
+
     async fetchAllResponses() {
-  this.fetchError = null;
-  try {
-    // Fetch all survey types for combined analysis
-    const [managementRes, hrRes, surveyRes] = await Promise.all([
-      axios.get("/api/management", { headers: { Authorization: `Bearer ${this.token}` } }),
-      axios.get("/api/hr-self-assessment", { headers: { Authorization: `Bearer ${this.token}` } }),
-      axios.get("/api/user-survey", { headers: { Authorization: `Bearer ${this.token}` } })
-    ]);
-    
-    // Add surveyType property to each response
-    const managementWithType = managementRes.data.map(r => ({ ...r, surveyType: 'management' }));
-    const hrWithType = hrRes.data.map(r => ({ ...r, surveyType: 'hr' }));
-    const surveyWithType = surveyRes.data.map(r => ({ ...r, surveyType: 'survey' }));
-    
-    this.allResponses = [
-      ...managementWithType,
-      ...hrWithType,
-      ...surveyWithType
-    ];
-    this.responses = this.allResponses; // Set current responses to all for display
-  } catch (err) {
-    console.error("Error fetching all responses:", err);
-    this.handleFetchError(err);
-  }
-},
+      this.fetchError = null;
+      try {
+        const [managementRes, hrRes, surveyRes] = await Promise.all([
+          axios.get("/api/management", { headers: { Authorization: `Bearer ${this.token}` } }),
+          axios.get("/api/hr-self-assessment", { headers: { Authorization: `Bearer ${this.token}` } }),
+          axios.get("/api/user-survey", { headers: { Authorization: `Bearer ${this.token}` } })
+        ]);
+        
+        const managementWithType = managementRes.data.map(r => ({ ...r, surveyType: 'management' }));
+        const hrWithType = hrRes.data.map(r => ({ ...r, surveyType: 'hr' }));
+        const surveyWithType = surveyRes.data.map(r => ({ ...r, surveyType: 'survey' }));
+        
+        this.allResponses = [
+          ...managementWithType,
+          ...hrWithType,
+          ...surveyWithType
+        ];
+        this.responses = this.allResponses;
+      } catch (err) {
+        console.error("Error fetching all responses:", err);
+        this.handleFetchError(err);
+      }
+    },
 
     handleFetchError(err) {
       if (err.response) {
@@ -1328,10 +2169,11 @@ getQuadrantChartPercentage(value, total) {
         this.fetchError = `Network or server error: ${err.message}`;
       }
     },
+
     selectResponse(resp) {
-      console.log('Selected response:', resp);
       this.selectedResponse = resp;
     },
+
     async deleteResponse(id) {
       if (!confirm("Are you sure you want to delete this response?")) return;
       try {
@@ -1346,10 +2188,12 @@ getQuadrantChartPercentage(value, total) {
         alert(`Failed to delete response: ${err.response?.data?.message || err.message}`);
       }
     },
+
     displayName(r) {
       if (!r) return "Anonymous";
       return r.name || r.managerName || r.assessorName || "Anonymous";
     },
+
     getAssessmentDate(r) {
       if (!r) return null;
       if (r.assessmentDate) return new Date(r.assessmentDate).toLocaleDateString();
@@ -1357,17 +2201,31 @@ getQuadrantChartPercentage(value, total) {
       if (r.createdAt) return new Date(r.createdAt).toLocaleDateString();
       return null;
     },
+
     getSectionLength(section) {
-      const sectionLengths = {
-        hr1: this.activeTab === 'survey' ? 4 : 6,
-        hr2: 2,
-        hr3: this.activeTab === 'survey' ? 8 : 10,
-        hr4: 6,
-        hr5: this.activeTab === 'survey' ? 3 : 4,
-        hr6: this.activeTab === 'survey' ? 4 : 6
-      };
-      return sectionLengths[section] || 0;
+      if (this.activeTab === 'survey') {
+        const sectionLengths = {
+          hr1: 4,
+          hr2: 2,
+          hr3: 8,
+          hr4: 6,
+          hr5: 3,
+          hr6: 4
+        };
+        return sectionLengths[section] || 0;
+      } else {
+        const sectionLengths = {
+          hr1: 6,
+          hr2: 2,
+          hr3: 10,
+          hr4: 6,
+          hr5: 4,
+          hr6: 6
+        };
+        return sectionLengths[section] || 0;
+      }
     },
+
     getRatingClass(value) {
       if (value === 'NA' || !value) return 'rating-na';
       const num = parseInt(value);
@@ -1376,117 +2234,8 @@ getQuadrantChartPercentage(value, total) {
       if (num >= 2) return 'rating-low';
       return 'rating-very-low';
     },
-// Add these methods to your existing methods object:
 
-// Chart helper methods
-getChartPercentage(value, maxValue) {
-  if (!maxValue || maxValue === 0) return 0;
-  return (value / maxValue) * 100;
-},
-
-getMaxQ1Value() {
-  let max = 0;
-  for (const hrCode in this.combinedQuadrantData) {
-    const value = this.combinedQuadrantData[hrCode]?.q1 || 0;
-    if (value > max) max = value;
-  }
-  return max;
-},
-
-getMaxQ2Value() {
-  let max = 0;
-  for (const hrCode in this.combinedQuadrantData) {
-    const value = this.combinedQuadrantData[hrCode]?.q2 || 0;
-    if (value > max) max = value;
-  }
-  return max;
-},
-
-getMaxQ3Value() {
-  let max = 0;
-  for (const hrCode in this.combinedQuadrantData) {
-    const value = this.combinedQuadrantData[hrCode]?.q3 || 0;
-    if (value > max) max = value;
-  }
-  return max;
-},
-
-getMaxQ4Value() {
-  let max = 0;
-  for (const hrCode in this.combinedQuadrantData) {
-    const value = this.combinedQuadrantData[hrCode]?.q4 || 0;
-    if (value > max) max = value;
-  }
-  return max;
-},
-
-getMaxTotalValue() {
-  let max = 0;
-  for (const hrCode in this.combinedQuadrantData) {
-    const value = this.getCombinedTotalAssessments(hrCode);
-    if (value > max) max = value;
-  }
-  return max;
-},
-
-getAssessmentSourceCounts(hrCode) {
-  const counts = { management: 0, hr: 0, survey: 0, total: 0 };
-  
-  // Reset allResponses to have surveyType property if not already set
-  if (!this.allResponses || this.allResponses.length === 0) {
-    return counts;
-  }
-  
-  this.allResponses.forEach(response => {
-    ['hr1', 'hr2', 'hr3', 'hr4', 'hr5', 'hr6'].forEach(section => {
-      const sectionData = response[section];
-      if (sectionData) {
-        sectionData.forEach((item, index) => {
-          const sectionNum = section.replace('hr', '');
-          const currentHRCode = `HR${sectionNum}.${index + 1}`;
-          
-          if (currentHRCode === hrCode && item.importance && item.implementation && 
-              item.importance !== 'NA' && item.implementation !== 'NA') {
-            
-            const importance = parseInt(item.importance);
-            const implementation = parseInt(item.implementation);
-            
-            if (importance >= 1 && importance <= 4 && implementation >= 1 && implementation <= 4) {
-              // Determine which survey type this came from
-              if (response.surveyType) {
-                counts[response.surveyType]++;
-              } else {
-                // Fallback: determine by response structure
-                if (response.managerName && !response.assessorName && !response.name) {
-                  counts.management++;
-                } else if (response.assessorName && !response.managerName && !response.name) {
-                  counts.hr++;
-                } else if (response.name && !response.managerName && !response.assessorName) {
-                  counts.survey++;
-                }
-              }
-              counts.total++;
-            }
-          }
-        });
-      }
-    });
-  });
-  
-  return counts;
-},
-
-getTotalAssessmentsBySource(hrCode) {
-  return this.getAssessmentSourceCounts(hrCode);
-},
-
-getSubmissionPercentage(hrCode, surveyType) {
-  const counts = this.getAssessmentSourceCounts(hrCode);
-  if (counts.total === 0) return 0;
-  return Math.round((counts[surveyType] / counts.total) * 100);
-},
-
-    // Statistics Methods
+    // Statistics methods (simplified versions)
     getCurrentSectionQuestions() {
       const sectionIndex = this.currentSections.indexOf(this.activeStatsSection);
       if (sectionIndex === -1) return [];
@@ -1678,142 +2427,6 @@ getSubmissionPercentage(hrCode, surveyType) {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-    },
-
-  calculateQuadrantData(responses) {
-  const quadrantItems = {};
-  
-  responses.forEach(response => {
-    ['hr1', 'hr2', 'hr3', 'hr4', 'hr5', 'hr6'].forEach(section => {
-      const sectionData = response[section];
-      if (sectionData) {
-        sectionData.forEach((item, index) => {
-          // Changed from: const hrCode = `${section.toUpperCase()}${index + 1}`;
-          // To: include decimal point
-          const sectionNum = section.replace('hr', '');
-          const hrCode = `HR${sectionNum}.${index + 1}`;
-          
-          if (!quadrantItems[hrCode]) {
-            quadrantItems[hrCode] = { q1: 0, q2: 0, q3: 0, q4: 0 };
-          }
-          
-          if (item.importance && item.implementation && 
-              item.importance !== 'NA' && item.implementation !== 'NA') {
-            
-            const importance = parseInt(item.importance);
-            const implementation = parseInt(item.implementation);
-            
-            // Apply the correct quadrant logic
-            if ((importance === 3 || importance === 4) && (implementation === 1 || implementation === 2)) {
-              // Q1: High Importance (3/4), Low Implementation (1/2)
-              quadrantItems[hrCode].q1++;
-            } else if ((importance === 3 || importance === 4) && (implementation === 3 || implementation === 4)) {
-              // Q2: High Importance (3/4), High Implementation (3/4)
-              quadrantItems[hrCode].q2++;
-            } else if ((importance === 1 || importance === 2) && (implementation === 1 || implementation === 2)) {
-              // Q3: Low Importance (1/2), Low Implementation (1/2)
-              quadrantItems[hrCode].q3++;
-            } else if ((importance === 1 || importance === 2) && (implementation === 3 || implementation === 4)) {
-              // Q4: Low Importance (1/2), High Implementation (3/4)
-              quadrantItems[hrCode].q4++;
-            }
-            // Note: Any other combinations (e.g., importance 3, implementation undefined)
-            // are not counted in any quadrant
-          }
-        });
-      }
-    });
-  });
-  
-  return quadrantItems;
-},
-
-    getFinalQuadrant(hrCode) {
-      const counts = this.quadrantData[hrCode];
-      if (!counts) return null;
-      
-      const maxCount = Math.max(counts.q1, counts.q2, counts.q3, counts.q4);
-      if (maxCount === 0) return null;
-      
-      if (counts.q1 === maxCount) return 'q1';
-      if (counts.q2 === maxCount) return 'q2';
-      if (counts.q3 === maxCount) return 'q3';
-      return 'q4';
-    },
-
-    getCombinedFinalQuadrant(hrCode) {
-      const counts = this.combinedQuadrantData[hrCode];
-      if (!counts) return null;
-      
-      const maxCount = Math.max(counts.q1, counts.q2, counts.q3, counts.q4);
-      if (maxCount === 0) return null;
-      
-      if (counts.q1 === maxCount) return 'q1';
-      if (counts.q2 === maxCount) return 'q2';
-      if (counts.q3 === maxCount) return 'q3';
-      return 'q4';
-    },
-
-    getQuadrantName(quadrant) {
-      const names = {
-        q1: 'Fix & Improve',
-        q2: 'Maintain & Sustain', 
-        q3: 'Leave Alone / No Action Required',
-        q4: 'Review to Maintain or Abolish'
-      };
-      return names[quadrant] || 'Unknown';
-    },
-
-    getQuadrantItems(quadrant) {
-      const items = [];
-      for (const hrCode in this.quadrantData) {
-        if (this.getFinalQuadrant(hrCode) === quadrant) {
-          items.push(hrCode);
-        }
-      }
-      return items.sort();
-    },
-
-    getCombinedQuadrantItems(quadrant) {
-      const items = [];
-      for (const hrCode in this.combinedQuadrantData) {
-        if (this.getCombinedFinalQuadrant(hrCode) === quadrant) {
-          items.push(hrCode);
-        }
-      }
-      return items.sort();
-    },
-
-    getItemCount(hrCode) {
-      const counts = this.quadrantData[hrCode];
-      if (!counts) return 0;
-      return counts.q1 + counts.q2 + counts.q3 + counts.q4;
-    },
-
-    getCombinedItemCount(hrCode) {
-      const counts = this.combinedQuadrantData[hrCode];
-      if (!counts) return 0;
-      return counts.q1 + counts.q2 + counts.q3 + counts.q4;
-    },
-
-    getAllHRItems() {
-      return Object.keys(this.quadrantData).sort();
-    },
-
-    getAllCombinedHRItems() {
-      return Object.keys(this.combinedQuadrantData).sort();
-    },
-
-    getTotalAssessments(hrCode) {
-      const counts = this.quadrantData[hrCode];
-      if (!counts) return 0;
-      return counts.q1 + counts.q2 + counts.q3 + counts.q4;
-    },
-
-    getCombinedTotalAssessments(hrCode) {
-      const counts = this.combinedQuadrantData[hrCode];
-      if (!counts) return 0;
-      return counts.q1 + counts.q2 + counts.q3 + counts.q4;
     }
   },
   
@@ -1824,6 +2437,114 @@ getSubmissionPercentage(hrCode, surveyType) {
 </script>
 
 <style scoped>
+/* Add export grid styles */
+.export-grid {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.export-grid .export-section {
+  margin-bottom: 10px;
+}
+
+.export-grid .export-section:last-child {
+  margin-bottom: 0;
+}
+
+/* Updated export button styles */
+.export-btn {
+  padding: 10px 20px;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  display: inline-block;
+}
+
+.export-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.export-btn:active {
+  transform: translateY(0);
+}
+
+/* Button color variants */
+.export-btn.bg-purple-600 {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+}
+
+.export-btn.bg-purple-600:hover {
+  background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
+}
+
+.export-btn.bg-indigo-600 {
+  background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+}
+
+.export-btn.bg-indigo-600:hover {
+  background: linear-gradient(135deg, #4338ca 0%, #3730a3 100%);
+}
+
+.export-btn.bg-blue-600 {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+}
+
+.export-btn.bg-blue-600:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+}
+
+.export-btn.bg-green-600 {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.export-btn.bg-green-600:hover {
+  background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+}
+
+.export-btn.bg-orange-600 {
+  background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+}
+
+.export-btn.bg-orange-600:hover {
+  background: linear-gradient(135deg, #c2410c 0%, #9a3412 100%);
+}
+
+.export-btn.bg-red-600 {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+}
+
+.export-btn.bg-red-600:hover {
+  background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+}
+
+/* Ensure buttons don't overflow on mobile */
+@media (max-width: 768px) {
+  .export-grid .export-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .export-btn {
+    margin-right: 0;
+    flex: 1;
+    min-width: 120px;
+    text-align: center;
+    font-size: 0.875rem;
+    padding: 8px 12px;
+  }
+}
+
+/* Rest of your existing CSS styles remain the same */
 .dashboard-container {
   max-width: 100%;
   margin: 0 auto;
@@ -2403,7 +3124,7 @@ getSubmissionPercentage(hrCode, surveyType) {
 
 .chart-bars {
   display: flex;
-  align-items: end;
+  align-items: flex-end; /* Change from 'end' to 'flex-end' */
   justify-content: space-between;
   height: 200px;
   gap: 15px;
@@ -2429,7 +3150,7 @@ getSubmissionPercentage(hrCode, surveyType) {
   height: 150px;
   width: 100%;
   display: flex;
-  align-items: end;
+  align-items: flex-end; /* Ensure this is also flex-end */
   position: relative;
   background: #f8fafc;
   border-radius: 4px;
@@ -2442,7 +3163,8 @@ getSubmissionPercentage(hrCode, surveyType) {
   position: relative;
   min-height: 20px;
   display: flex;
-  align-items: end;
+  align-self: flex-end; /* Add this line */
+  align-items: flex-start; /* Change from 'end' to 'flex-start' */
   justify-content: center;
 }
 
@@ -3372,5 +4094,20 @@ getSubmissionPercentage(hrCode, surveyType) {
 
 .quadrant-submissions-section tr:nth-child(4) { /* Q4 */
   border-left: 4px solid #7c3aed;
+}
+
+/* Updated export button styles for quadrant analysis */
+.export-btn.bg-purple-600 {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+}
+
+.export-btn.bg-purple-600:hover {
+  background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(124, 58, 237, 0.4);
+}
+
+.export-btn:active {
+  transform: translateY(0);
 }
 </style>

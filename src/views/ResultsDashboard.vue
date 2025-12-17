@@ -391,7 +391,7 @@
         <div class="quadrant-content">
           <div v-for="hrCode in getQuadrantItems('q1')" :key="hrCode" class="hr-item">
             {{ hrCode }}
-            <span class="item-count">({{ getItemCount(hrCode) }})</span>
+           <span class="item-count">({{ getItemCount(hrCode, 'q1') }})</span>
           </div>
           <div v-if="getQuadrantItems('q1').length === 0" class="no-items">
             No items
@@ -408,7 +408,7 @@
         <div class="quadrant-content">
           <div v-for="hrCode in getQuadrantItems('q2')" :key="hrCode" class="hr-item">
             {{ hrCode }}
-            <span class="item-count">({{ getItemCount(hrCode) }})</span>
+           <span class="item-count">({{ getItemCount(hrCode, 'q2') }})</span>
           </div>
           <div v-if="getQuadrantItems('q2').length === 0" class="no-items">
             No items
@@ -425,7 +425,7 @@
         <div class="quadrant-content">
           <div v-for="hrCode in getQuadrantItems('q3')" :key="hrCode" class="hr-item">
             {{ hrCode }}
-            <span class="item-count">({{ getItemCount(hrCode) }})</span>
+            <span class="item-count">({{ getItemCount(hrCode, 'q3') }})</span>
           </div>
           <div v-if="getQuadrantItems('q3').length === 0" class="no-items">
             No items
@@ -442,7 +442,7 @@
         <div class="quadrant-content">
           <div v-for="hrCode in getQuadrantItems('q4')" :key="hrCode" class="hr-item">
             {{ hrCode }}
-            <span class="item-count">({{ getItemCount(hrCode) }})</span>
+              <span class="item-count">({{ getItemCount(hrCode, 'q4') }})</span>
           </div>
           <div v-if="getQuadrantItems('q4').length === 0" class="no-items">
             No items
@@ -508,35 +508,40 @@
     Combined analysis across all survey types
   </p>
   
-  <!-- Export Buttons for Quadrant Analysis -->
-  <div class="export-grid mb-6">
-    <div class="export-section">
-      <button @click="exportQuadrantAnalysisToCSV" class="export-btn bg-purple-600 hover:bg-purple-700">
-        📊 Export All Quadrant Analysis (Excel)
-      </button>
-      <span class="text-sm text-gray-600 ml-4">
-        All sections in one Excel file
-      </span>
-    </div>
-    
-    <div class="export-section mt-4">
-      <button @click="exportCombinedQuadrantAnalysis" class="export-btn bg-indigo-600 hover:bg-indigo-700">
-        📋 Export Combined Quadrant Analysis
-      </button>
-      <button @click="exportCombinedQuadrantBreakdown" class="export-btn bg-blue-600 hover:bg-blue-700 ml-2">
-        📊 Export Combined Quadrant Breakdown
-      </button>
-      <button @click="exportQuadrantSubmissionSources" class="export-btn bg-green-600 hover:bg-green-700 ml-2">
-        📈 Export Quadrant Submission Sources
-      </button>
-      <button @click="exportQuadrantDistributionCharts" class="export-btn bg-orange-600 hover:bg-orange-700 ml-2">
-        📉 Export Quadrant Distribution Charts
-      </button>
-      <button @click="exportTotalAssessments" class="export-btn bg-red-600 hover:bg-red-700 ml-2">
-        🎯 Export Total Assessments
-      </button>
-    </div>
+ <!-- Inside the export buttons grid in quadrant analysis tab -->
+<div class="export-grid mb-6">
+  <div class="export-section">
+    <button @click="exportQuadrantAnalysisToCSV" class="export-btn bg-purple-600 hover:bg-purple-700">
+      📊 Export All Quadrant Analysis (Excel)
+    </button>
+    <!-- ADD THIS NEW BUTTON -->
+    <button @click="exportQuadrantAnalysisResponses" class="export-btn bg-teal-600 hover:bg-teal-700 ml-2">
+      📋 Export Quadrant Analysis Responses (Excel)
+    </button>
+    <span class="text-sm text-gray-600 ml-4">
+      All sections in one Excel file
+    </span>
   </div>
+  
+  <div class="export-section mt-4">
+    <button @click="exportCombinedQuadrantAnalysis" class="export-btn bg-indigo-600 hover:bg-indigo-700">
+      📋 Export Combined Quadrant Analysis
+    </button>
+    <button @click="exportCombinedQuadrantBreakdown" class="export-btn bg-blue-600 hover:bg-blue-700 ml-2">
+      📊 Export Combined Quadrant Breakdown
+    </button>
+    <button @click="exportQuadrantSubmissionSources" class="export-btn bg-green-600 hover:bg-green-700 ml-2">
+      📈 Export Quadrant Submission Sources
+    </button>
+    <!-- CHANGE THIS BUTTON TO INDICATE PDF -->
+ <button @click="exportQuadrantDistributionCharts" class="export-btn bg-orange-600 hover:bg-orange-700 ml-2">
+  📉 Export Quadrant Charts (PDF - All Items)
+</button>
+    <button @click="exportTotalAssessments" class="export-btn bg-red-600 hover:bg-red-700 ml-2">
+      🎯 Export Total Assessments
+    </button>
+  </div>
+</div>
   
   <!-- Quadrant Cards - COMPLETELY SEPARATE CONTAINER -->
   <div class="quadrant-cards-container mb-8">
@@ -550,33 +555,33 @@
         <div class="quadrant-content">
           <div v-for="hrCode in getCombinedQuadrantItems('q1')" :key="hrCode" class="hr-item">
             {{ hrCode }}
-            <span class="item-count">({{ getCombinedItemCount(hrCode) }})</span>
-             <!-- ADD THIS CHART GRID HERE -->
-      <div class="quadrant-item-chart">
-        <div class="chart-bars small">
-          <div v-for="(quad, quadKey) in ['q1', 'q2', 'q3', 'q4']" :key="quadKey" 
-               class="chart-bar-container small">
-            <div class="chart-label">{{ quad.toUpperCase().replace('Q', '') }}</div>
-            <div class="chart-bar-wrapper small">
-              <div 
-                class="chart-bar quadrant-bar" 
-                :class="`quadrant-${quad.replace('q', '')}`"
-                :style="{ 
-                  height: getQuadrantChartPercentage(
-                    getQuadrantChartData(hrCode, combinedQuadrantData)[quad], 
-                    getQuadrantChartData(hrCode, combinedQuadrantData).total
-                  ) + '%' 
-                }"
-                :title="`${quad.toUpperCase()}: ${getQuadrantChartData(hrCode, combinedQuadrantData)[quad]} assessments`"
-              >
-                <span class="chart-count small">{{ getQuadrantChartData(hrCode, combinedQuadrantData)[quad] }}</span>
-              </div>
-            </div>
+           <span class="item-count">({{ getCombinedItemCount(hrCode, 'q1') }})</span>
+        <!-- ADD THIS CHART GRID HERE -->
+  <div class="quadrant-item-chart">
+    <div class="chart-bars small">
+      <div v-for="quad in ['q1', 'q2', 'q3', 'q4']" :key="quad" 
+           class="chart-bar-container small">
+        <div class="chart-label">{{ quad.toUpperCase().replace('Q', '') }}</div>
+        <div class="chart-bar-wrapper small">
+          <div 
+            class="chart-bar quadrant-bar" 
+            :class="`quadrant-${quad.replace('q', '')}`"
+            :style="{ 
+              height: getQuadrantChartPercentage(
+                getQuadrantChartData(hrCode, combinedQuadrantData)[quad], 
+                getQuadrantChartData(hrCode, combinedQuadrantData).total
+              ) + '%' 
+            }"
+            :title="`${quad.toUpperCase()}: ${getQuadrantChartData(hrCode, combinedQuadrantData)[quad]} assessments`"
+          >
+            <span class="chart-count small">{{ getQuadrantChartData(hrCode, combinedQuadrantData)[quad] }}</span>
           </div>
         </div>
       </div>
-      <!-- END OF CHART GRID -->
-          </div>
+    </div>
+  </div>
+  <!-- END OF CHART GRID -->
+</div>
           <div v-if="getCombinedQuadrantItems('q1').length === 0" class="no-items">
             No items
           </div>
@@ -594,29 +599,29 @@
             {{ hrCode }}
             <span class="item-count">({{ getCombinedItemCount(hrCode) }})</span>
              <!-- ADD THIS CHART GRID HERE -->
-      <div class="quadrant-item-chart">
-        <div class="chart-bars small">
-          <div v-for="(quad, quadKey) in ['q1', 'q2', 'q3', 'q4']" :key="quadKey" 
-               class="chart-bar-container small">
-            <div class="chart-label">{{ quad.toUpperCase().replace('Q', '') }}</div>
-            <div class="chart-bar-wrapper small">
-              <div 
-                class="chart-bar quadrant-bar" 
-                :class="`quadrant-${quad.replace('q', '')}`"
-                :style="{ 
-                  height: getQuadrantChartPercentage(
-                    getQuadrantChartData(hrCode, combinedQuadrantData)[quad], 
-                    getQuadrantChartData(hrCode, combinedQuadrantData).total
-                  ) + '%' 
-                }"
-                :title="`${quad.toUpperCase()}: ${getQuadrantChartData(hrCode, combinedQuadrantData)[quad]} assessments`"
-              >
-                <span class="chart-count small">{{ getQuadrantChartData(hrCode, combinedQuadrantData)[quad] }}</span>
-              </div>
-            </div>
-          </div>
+     <div class="quadrant-item-chart">
+  <div class="chart-bars small">
+    <div v-for="quad in ['q1', 'q2', 'q3', 'q4']" :key="quad" 
+         class="chart-bar-container small">
+      <div class="chart-label">{{ quad.toUpperCase().replace('Q', '') }}</div>
+      <div class="chart-bar-wrapper small">
+        <div 
+          class="chart-bar quadrant-bar" 
+          :class="`quadrant-${quad.replace('q', '')}`"
+          :style="{ 
+            height: getQuadrantChartPercentage(
+              getQuadrantChartData(hrCode, combinedQuadrantData)[quad], 
+              getQuadrantChartData(hrCode, combinedQuadrantData).total
+            ) + '%' 
+          }"
+          :title="`${quad.toUpperCase()}: ${getQuadrantChartData(hrCode, combinedQuadrantData)[quad]} assessments`"
+        >
+          <span class="chart-count small">{{ getQuadrantChartData(hrCode, combinedQuadrantData)[quad] }}</span>
         </div>
       </div>
+    </div>
+  </div>
+</div>
       <!-- END OF CHART GRID -->
           </div>
           <div v-if="getCombinedQuadrantItems('q2').length === 0" class="no-items">
@@ -636,29 +641,29 @@
             {{ hrCode }}
             <span class="item-count">({{ getCombinedItemCount(hrCode) }})</span>
              <!-- ADD THIS CHART GRID HERE -->
-      <div class="quadrant-item-chart">
-        <div class="chart-bars small">
-          <div v-for="(quad, quadKey) in ['q1', 'q2', 'q3', 'q4']" :key="quadKey" 
-               class="chart-bar-container small">
-            <div class="chart-label">{{ quad.toUpperCase().replace('Q', '') }}</div>
-            <div class="chart-bar-wrapper small">
-              <div 
-                class="chart-bar quadrant-bar" 
-                :class="`quadrant-${quad.replace('q', '')}`"
-                :style="{ 
-                  height: getQuadrantChartPercentage(
-                    getQuadrantChartData(hrCode, combinedQuadrantData)[quad], 
-                    getQuadrantChartData(hrCode, combinedQuadrantData).total
-                  ) + '%' 
-                }"
-                :title="`${quad.toUpperCase()}: ${getQuadrantChartData(hrCode, combinedQuadrantData)[quad]} assessments`"
-              >
-                <span class="chart-count small">{{ getQuadrantChartData(hrCode, combinedQuadrantData)[quad] }}</span>
-              </div>
-            </div>
-          </div>
+   <div class="quadrant-item-chart">
+  <div class="chart-bars small">
+    <div v-for="quad in ['q1', 'q2', 'q3', 'q4']" :key="quad" 
+         class="chart-bar-container small">
+      <div class="chart-label">{{ quad.toUpperCase().replace('Q', '') }}</div>
+      <div class="chart-bar-wrapper small">
+        <div 
+          class="chart-bar quadrant-bar" 
+          :class="`quadrant-${quad.replace('q', '')}`"
+          :style="{ 
+            height: getQuadrantChartPercentage(
+              getQuadrantChartData(hrCode, combinedQuadrantData)[quad], 
+              getQuadrantChartData(hrCode, combinedQuadrantData).total
+            ) + '%' 
+          }"
+          :title="`${quad.toUpperCase()}: ${getQuadrantChartData(hrCode, combinedQuadrantData)[quad]} assessments`"
+        >
+          <span class="chart-count small">{{ getQuadrantChartData(hrCode, combinedQuadrantData)[quad] }}</span>
         </div>
       </div>
+    </div>
+  </div>
+</div>
       <!-- END OF CHART GRID -->
           </div>
           <div v-if="getCombinedQuadrantItems('q3').length === 0" class="no-items">
@@ -678,29 +683,29 @@
             {{ hrCode }}
             <span class="item-count">({{ getCombinedItemCount(hrCode) }})</span>
              <!-- ADD THIS CHART GRID HERE -->
-      <div class="quadrant-item-chart">
-        <div class="chart-bars small">
-          <div v-for="(quad, quadKey) in ['q1', 'q2', 'q3', 'q4']" :key="quadKey" 
-               class="chart-bar-container small">
-            <div class="chart-label">{{ quad.toUpperCase().replace('Q', '') }}</div>
-            <div class="chart-bar-wrapper small">
-              <div 
-                class="chart-bar quadrant-bar" 
-                :class="`quadrant-${quad.replace('q', '')}`"
-                :style="{ 
-                  height: getQuadrantChartPercentage(
-                    getQuadrantChartData(hrCode, combinedQuadrantData)[quad], 
-                    getQuadrantChartData(hrCode, combinedQuadrantData).total
-                  ) + '%' 
-                }"
-                :title="`${quad.toUpperCase()}: ${getQuadrantChartData(hrCode, combinedQuadrantData)[quad]} assessments`"
-              >
-                <span class="chart-count small">{{ getQuadrantChartData(hrCode, combinedQuadrantData)[quad] }}</span>
-              </div>
-            </div>
-          </div>
+     <div class="quadrant-item-chart">
+  <div class="chart-bars small">
+    <div v-for="quad in ['q1', 'q2', 'q3', 'q4']" :key="quad" 
+         class="chart-bar-container small">
+      <div class="chart-label">{{ quad.toUpperCase().replace('Q', '') }}</div>
+      <div class="chart-bar-wrapper small">
+        <div 
+          class="chart-bar quadrant-bar" 
+          :class="`quadrant-${quad.replace('q', '')}`"
+          :style="{ 
+            height: getQuadrantChartPercentage(
+              getQuadrantChartData(hrCode, combinedQuadrantData)[quad], 
+              getQuadrantChartData(hrCode, combinedQuadrantData).total
+            ) + '%' 
+          }"
+          :title="`${quad.toUpperCase()}: ${getQuadrantChartData(hrCode, combinedQuadrantData)[quad]} assessments`"
+        >
+          <span class="chart-count small">{{ getQuadrantChartData(hrCode, combinedQuadrantData)[quad] }}</span>
         </div>
       </div>
+    </div>
+  </div>
+</div>
       <!-- END OF CHART GRID -->
           </div>
           <div v-if="getCombinedQuadrantItems('q4').length === 0" class="no-items">
@@ -811,9 +816,9 @@
   <p class="text-sm text-gray-600 mb-6">Visual breakdown of quadrant assessments per HR item</p>
   
   <div class="export-section mt-4 mb-4">
-    <button @click="exportQuadrantDistributionCharts" class="export-btn bg-orange-600 hover:bg-orange-700">
-      📥 Export Quadrant Distribution Charts
-    </button>
+   <button @click="exportQuadrantDistributionCharts" class="export-btn bg-orange-600 hover:bg-orange-700 ml-2">
+  📉 Export Quadrant Charts (PDF - All Items)
+</button>
   </div>
   
   <!-- Charts Grid -->
@@ -983,6 +988,9 @@
 <script>
 import axios from "@/axios";
 import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import html2canvas from 'html2canvas';
 
 export default {
   name: "ResultsDashboard",
@@ -1366,55 +1374,326 @@ export default {
       }
     },
 
-    // 4. Export Quadrant Distribution Charts (Individual)
-    exportQuadrantDistributionCharts() {
-      try {
-        const data = [];
-        const headers = [
-          'HR Item',
-          'Q1: Fix & Improve Count',
-          'Q2: Maintain & Sustain Count',
-          'Q3: Leave Alone Count',
-          'Q4: Review to Maintain or Abolish Count',
-          'Q1 Percentage of Max',
-          'Q2 Percentage of Max',
-          'Q3 Percentage of Max',
-          'Q4 Percentage of Max'
-        ];
-        
-        data.push(headers);
-        
-        const maxValues = {
-          q1: this.getMaxQ1Value(),
-          q2: this.getMaxQ2Value(),
-          q3: this.getMaxQ3Value(),
-          q4: this.getMaxQ4Value()
-        };
-        
-        const allHRItems = this.getAllCombinedHRItems();
-        allHRItems.forEach(hrCode => {
-          const counts = this.combinedQuadrantData[hrCode] || { q1: 0, q2: 0, q3: 0, q4: 0 };
-          
-          data.push([
-            hrCode,
-            counts.q1 || 0,
-            counts.q2 || 0,
-            counts.q3 || 0,
-            counts.q4 || 0,
-            maxValues.q1 > 0 ? ((counts.q1 || 0) / maxValues.q1 * 100).toFixed(2) + '%' : '0%',
-            maxValues.q2 > 0 ? ((counts.q2 || 0) / maxValues.q2 * 100).toFixed(2) + '%' : '0%',
-            maxValues.q3 > 0 ? ((counts.q3 || 0) / maxValues.q3 * 100).toFixed(2) + '%' : '0%',
-            maxValues.q4 > 0 ? ((counts.q4 || 0) / maxValues.q4 * 100).toFixed(2) + '%' : '0%'
-          ]);
-        });
-        
-        this.exportToExcel(data, 'Quadrant_Distribution_Charts');
-        
-      } catch (error) {
-        console.error('Error exporting quadrant distribution charts:', error);
-        alert('Error exporting quadrant distribution charts: ' + error.message);
+    exportQuadrantAnalysisResponses() {
+  try {
+    const data = [];
+    const headers = [
+      'Name',
+      'Position',
+      'Department',
+      'Date Joined',
+      'Assessment Date',
+      'Survey Type'
+    ];
+    
+    data.push(headers);
+    
+    this.allResponses.forEach(response => {
+      data.push([
+        this.displayName(response),
+        response.position || '',
+        response.department || '',
+        response.dateJoined || '',
+        this.getAssessmentDate(response) || '',
+        response.surveyType || 'unknown'
+      ]);
+    });
+    
+    this.exportToExcel(data, 'Quadrant_Analysis_Responses');
+    
+  } catch (error) {
+    console.error('Error exporting quadrant analysis responses:', error);
+    alert('Error exporting quadrant analysis responses: ' + error.message);
+  }
+},
+
+// Replace the exportQuadrantDistributionCharts method with this version
+async exportQuadrantDistributionCharts() {
+  try {
+    // Show loading
+    alert('Generating PDF with ALL HR items... This may take a moment.');
+    
+    const doc = new jsPDF('landscape', 'pt', 'a4');
+    let pageNumber = 1;
+    
+    // Title page
+    doc.setFontSize(24);
+    doc.setTextColor(41, 128, 185);
+    doc.text('Quadrant Distribution Analysis', 20, 40);
+    
+    doc.setFontSize(12);
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Generated on: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`, 20, 65);
+    doc.text(`Total HR Items: ${this.getAllCombinedHRItems().length}`, 20, 85);
+    doc.text(`Total Assessments: ${this.getOverallTotalAssessments()}`, 20, 105);
+    
+    // Add summary
+    doc.setFontSize(14);
+    doc.setTextColor(30, 30, 30);
+    doc.text('Executive Summary', 20, 140);
+    
+    doc.setFontSize(10);
+    const summaryText = [
+      'This report contains ALL HR items without scrollable sections:',
+      '• All HR items are displayed fully without truncation',
+      '• No scrollable sections - everything is visible',
+      '• Each quadrant chart shows ALL HR items',
+      '• Designed for complete analysis and printing'
+    ];
+    
+    summaryText.forEach((line, index) => {
+      doc.text(line, 30, 165 + (index * 20));
+    });
+    
+    // Start creating charts from scratch with ALL items
+    this.createExpandedChartsForPDF(doc);
+    
+    // Save PDF
+    const fileName = `Complete_Quadrant_Analysis_All_Items_${new Date().toISOString().split('T')[0]}.pdf`;
+    doc.save(fileName);
+    
+    alert('Complete quadrant analysis with ALL HR items exported successfully as PDF!');
+    
+  } catch (error) {
+    console.error('Error exporting quadrant distribution charts:', error);
+    alert('Error exporting quadrant distribution charts: ' + error.message);
+  }
+},
+
+// Add this method to create expanded charts
+createExpandedChartsForPDF(doc) {
+  const allHRItems = this.getAllCombinedHRItems();
+  if (allHRItems.length === 0) {
+    doc.text('No HR items found to display.', 40, 160);
+    return;
+  }
+  
+  // Add a new page for the detailed view
+  doc.addPage();
+  
+  // Function to add page header
+  const addPageHeader = () => {
+    doc.setFontSize(24);
+    doc.setTextColor(41, 128, 185);
+    doc.text('Quadrant Distribution - All HR Items', 40, 40);
+    
+    doc.setFontSize(12);
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Showing all ${allHRItems.length} HR items`, 40, 65);
+    
+    // Draw separator line
+    doc.setDrawColor(200, 200, 200);
+    doc.line(40, 75, doc.internal.pageSize.width - 40, 75);
+  };
+  
+  // Function to add page footer
+  const addPageFooter = () => {
+    doc.setFontSize(8);
+    doc.setTextColor(150, 150, 150);
+    doc.text(
+      'All HR items shown - No scrollable sections',
+      doc.internal.pageSize.width / 2,
+      doc.internal.pageSize.height - 10,
+      { align: 'center' }
+    );
+  };
+  
+  // Add header to first page
+  addPageHeader();
+  
+  // Set starting position
+  let yPos = 90;
+  const itemHeight = 20;
+  const maxItemsPerPage = Math.floor((doc.internal.pageSize.height - 150) / itemHeight);
+  
+  // Process all HR items
+  for (let i = 0; i < allHRItems.length; i++) {
+    const hrCode = allHRItems[i];
+    
+    // Check if we need a new page
+    if (yPos > doc.internal.pageSize.height - 100) {
+      addPageFooter();
+      doc.addPage();
+      addPageHeader();
+      yPos = 90;
+    }
+    
+    // Get quadrant data for this HR item
+    const counts = this.combinedQuadrantData[hrCode] || { q1: 0, q2: 0, q3: 0, q4: 0 };
+    const total = this.getCombinedTotalAssessments(hrCode);
+    
+    // Draw HR item label
+    doc.setFontSize(10);
+    doc.setTextColor(30, 30, 30);
+    doc.text(hrCode, 40, yPos + 5);
+    
+    // Draw counts
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Q1: ${counts.q1}`, 120, yPos + 5);
+    doc.text(`Q2: ${counts.q2}`, 180, yPos + 5);
+    doc.text(`Q3: ${counts.q3}`, 240, yPos + 5);
+    doc.text(`Q4: ${counts.q4}`, 300, yPos + 5);
+    
+    // Draw total
+    doc.setFontSize(10);
+    doc.setTextColor(41, 128, 185);
+    doc.text(`Total: ${total}`, 360, yPos + 5);
+    
+    // Draw bar chart for visual representation
+    const barStartX = 420;
+    const barWidth = 250;
+    const barHeight = 10;
+    
+    // Background bar
+    doc.setFillColor(240, 240, 240);
+    doc.roundedRect(barStartX, yPos, barWidth, barHeight, 2, 2, 'F');
+    
+    // Draw quadrant segments on the bar
+    if (total > 0) {
+      const segmentWidths = {
+        q1: (counts.q1 / total) * barWidth,
+        q2: (counts.q2 / total) * barWidth,
+        q3: (counts.q3 / total) * barWidth,
+        q4: (counts.q4 / total) * barWidth
+      };
+      
+      let currentX = barStartX;
+      
+      // Q1 segment (red)
+      if (segmentWidths.q1 > 0) {
+        doc.setFillColor(239, 68, 68);
+        doc.roundedRect(currentX, yPos, segmentWidths.q1, barHeight, 2, 2, 'F');
+        currentX += segmentWidths.q1;
       }
-    },
+      
+      // Q2 segment (green)
+      if (segmentWidths.q2 > 0) {
+        doc.setFillColor(16, 185, 129);
+        doc.roundedRect(currentX, yPos, segmentWidths.q2, barHeight, 2, 2, 'F');
+        currentX += segmentWidths.q2;
+      }
+      
+      // Q3 segment (amber)
+      if (segmentWidths.q3 > 0) {
+        doc.setFillColor(245, 158, 11);
+        doc.roundedRect(currentX, yPos, segmentWidths.q3, barHeight, 2, 2, 'F');
+        currentX += segmentWidths.q3;
+      }
+      
+      // Q4 segment (purple)
+      if (segmentWidths.q4 > 0) {
+        doc.setFillColor(139, 92, 246);
+        doc.roundedRect(currentX, yPos, segmentWidths.q4, barHeight, 2, 2, 'F');
+      }
+    }
+    
+    // Move to next line
+    yPos += itemHeight + 5;
+  }
+  
+  // Add summary page
+  doc.addPage();
+  
+  // Summary header
+  doc.setFontSize(18);
+  doc.setTextColor(41, 128, 185);
+  doc.text('Quadrant Analysis Summary', 40, 40);
+  
+  doc.setFontSize(12);
+  doc.setTextColor(100, 100, 100);
+  doc.text('Complete overview of all HR items and their quadrant distribution', 40, 65);
+  
+  yPos = 90;
+  
+  // Calculate totals for each quadrant
+  const quadrantTotals = { q1: 0, q2: 0, q3: 0, q4: 0 };
+  allHRItems.forEach(hrCode => {
+    const counts = this.combinedQuadrantData[hrCode] || { q1: 0, q2: 0, q3: 0, q4: 0 };
+    quadrantTotals.q1 += counts.q1;
+    quadrantTotals.q2 += counts.q2;
+    quadrantTotals.q3 += counts.q3;
+    quadrantTotals.q4 += counts.q4;
+  });
+  
+  const totalAssessments = quadrantTotals.q1 + quadrantTotals.q2 + quadrantTotals.q3 + quadrantTotals.q4;
+  
+  // Add summary statistics
+  doc.setFontSize(14);
+  doc.setTextColor(30, 30, 30);
+  doc.text('Summary Statistics', 40, yPos);
+  yPos += 30;
+  
+  doc.setFontSize(10);
+  doc.text(`Total HR Items: ${allHRItems.length}`, 50, yPos);
+  yPos += 15;
+  doc.text(`Total Assessments: ${totalAssessments}`, 50, yPos);
+  yPos += 20;
+  
+  // Add quadrant breakdown
+  doc.setFontSize(14);
+  doc.setTextColor(30, 30, 30);
+  doc.text('Quadrant Breakdown', 40, yPos);
+  yPos += 30;
+  
+  const quadrantInfo = [
+    { label: 'Q1: Fix & Improve', count: quadrantTotals.q1, color: [239, 68, 68] },
+    { label: 'Q2: Maintain & Sustain', count: quadrantTotals.q2, color: [16, 185, 129] },
+    { label: 'Q3: Leave Alone', count: quadrantTotals.q3, color: [245, 158, 11] },
+    { label: 'Q4: Review to Maintain or Abolish', count: quadrantTotals.q4, color: [139, 92, 246] }
+  ];
+  
+  quadrantInfo.forEach((info, index) => {
+    const percentage = totalAssessments > 0 ? ((info.count / totalAssessments) * 100).toFixed(1) : 0;
+    
+    doc.setFontSize(10);
+    doc.setTextColor(30, 30, 30);
+    doc.text(info.label, 50, yPos + 5);
+    
+    doc.setTextColor(...info.color);
+    doc.text(`${info.count} assessments (${percentage}%)`, 250, yPos + 5);
+    
+    // Draw a small color swatch
+    doc.setFillColor(...info.color);
+    doc.rect(40, yPos, 8, 8, 'F');
+    
+    yPos += 15;
+  });
+  
+  // Add top items by quadrant
+  yPos += 20;
+  doc.setFontSize(14);
+  doc.setTextColor(30, 30, 30);
+  doc.text('Top Items by Quadrant', 40, yPos);
+  yPos += 30;
+  
+  const quadrants = ['q1', 'q2', 'q3', 'q4'];
+  quadrants.forEach(quadrant => {
+    const items = this.getCombinedQuadrantItems(quadrant);
+    if (items.length > 0) {
+      doc.setFontSize(10);
+      doc.setTextColor(30, 30, 30);
+      doc.text(`${this.getQuadrantDisplayName(quadrant)}:`, 50, yPos);
+      
+      // Show top 5 items
+      const topItems = items.slice(0, 5);
+      topItems.forEach((item, idx) => {
+        const count = this.combinedQuadrantData[item]?.[quadrant] || 0;
+        doc.text(`${item} (${count})`, 70, yPos + 15 + (idx * 12));
+      });
+      
+      yPos += 20 + (topItems.length * 12);
+    }
+  });
+  
+  // Add final note
+  yPos += 20;
+  doc.setFontSize(10);
+  doc.setTextColor(100, 100, 100);
+  doc.text('End of Report - All HR items shown without scrolling or truncation.', 40, yPos);
+  
+  // Add footer to last page
+  addPageFooter();
+},
 
     // 5. Export Total Assessments per HR Item (Individual)
     exportTotalAssessments() {
@@ -1528,6 +1807,8 @@ export default {
       
       alert(`${sheetName} exported successfully!`);
     },
+
+
 
     // 7. Combined export (all in one Excel file with multiple sheets)
     exportQuadrantAnalysisToCSV() {
@@ -1781,119 +2062,152 @@ export default {
       return `HR${sectionNum}.${index + 1}`;
     },
 
-    // Main quadrant calculation method
-    calculateQuadrantData(responses) {
-      const quadrantItems = {};
+  calculateQuadrantData(responses) {
+  const quadrantItems = {};
+  
+  if (!responses || responses.length === 0) {
+    return quadrantItems;
+  }
+  
+  responses.forEach((response, responseIndex) => {
+    const surveyType = response.surveyType || 
+      (response.managerName && !response.assessorName && !response.name ? 'management' :
+       response.assessorName && !response.managerName && !response.name ? 'hr' :
+       response.name && !response.managerName && !response.assessorName ? 'survey' : 'unknown');
+    
+    // Process each HR section
+    for (let sectionNum = 1; sectionNum <= 6; sectionNum++) {
+      const section = `hr${sectionNum}`;
+      const sectionData = response[section];
       
-      if (!responses || responses.length === 0) {
-        return quadrantItems;
-      }
-      
-      responses.forEach(response => {
-        const surveyType = response.surveyType || 
-          (response.managerName && !response.assessorName && !response.name ? 'management' :
-           response.assessorName && !response.managerName && !response.name ? 'hr' :
-           response.name && !response.managerName && !response.assessorName ? 'survey' : 'unknown');
-        
-        ['hr1', 'hr2', 'hr3', 'hr4', 'hr5', 'hr6'].forEach(section => {
-          const sectionData = response[section];
-          if (sectionData && Array.isArray(sectionData)) {
-            sectionData.forEach((item, index) => {
-              if (!item) return;
-              
-              const hrCode = this.getActualHRCode(surveyType, section, index);
-              
-              if (!quadrantItems[hrCode]) {
-                quadrantItems[hrCode] = { q1: 0, q2: 0, q3: 0, q4: 0 };
-              }
-              
-              const importance = item.importance;
-              const implementation = item.implementation;
-              
-              if (importance && implementation && 
-                  importance !== 'NA' && implementation !== 'NA') {
-                
-                const impNum = parseInt(importance);
-                const implNum = parseInt(implementation);
-                
-                if (isNaN(impNum) || isNaN(implNum)) return;
-                
-                if ((impNum === 3 || impNum === 4) && (implNum === 1 || implNum === 2)) {
-                  quadrantItems[hrCode].q1++;
-                } else if ((impNum === 3 || impNum === 4) && (implNum === 3 || implNum === 4)) {
-                  quadrantItems[hrCode].q2++;
-                } else if ((impNum === 1 || impNum === 2) && (implNum === 1 || implNum === 2)) {
-                  quadrantItems[hrCode].q3++;
-                } else if ((impNum === 1 || impNum === 2) && (implNum === 3 || implNum === 4)) {
-                  quadrantItems[hrCode].q4++;
-                }
-              }
-            });
+      if (sectionData && Array.isArray(sectionData)) {
+        sectionData.forEach((item, index) => {
+          if (!item || !item.importance || !item.implementation) return;
+          
+          // Skip NA values
+          if (item.importance === 'NA' || item.implementation === 'NA') return;
+          
+          const impNum = parseInt(item.importance);
+          const implNum = parseInt(item.implementation);
+          
+          if (isNaN(impNum) || isNaN(implNum)) return;
+          
+          // Get HR code
+          const hrCode = this.getActualHRCode(surveyType, section, index);
+          
+          // Initialize if not exists
+          if (!quadrantItems[hrCode]) {
+            quadrantItems[hrCode] = { q1: 0, q2: 0, q3: 0, q4: 0 };
+          }
+          
+          // Determine quadrant
+          let quadrant = null;
+          
+          // Q1: High Importance (3-4), Low Implementation (1-2)
+          if ((impNum === 3 || impNum === 4) && (implNum === 1 || implNum === 2)) {
+            quadrant = 'q1';
+          }
+          // Q2: High Importance (3-4), High Implementation (3-4)
+          else if ((impNum === 3 || impNum === 4) && (implNum === 3 || implNum === 4)) {
+            quadrant = 'q2';
+          }
+          // Q3: Low Importance (1-2), Low Implementation (1-2)
+          else if ((impNum === 1 || impNum === 2) && (implNum === 1 || implNum === 2)) {
+            quadrant = 'q3';
+          }
+          // Q4: Low Importance (1-2), High Implementation (3-4)
+          else if ((impNum === 1 || impNum === 2) && (implNum === 3 || implNum === 4)) {
+            quadrant = 'q4';
+          }
+          
+          // DEBUG: Log if we couldn't determine quadrant
+          if (!quadrant) {
+            console.warn(`Could not determine quadrant for ${hrCode}: imp=${impNum}, impl=${implNum}, response=${responseIndex}`);
+          }
+          
+          // Increment quadrant count
+          if (quadrant && quadrantItems[hrCode][quadrant] !== undefined) {
+            quadrantItems[hrCode][quadrant]++;
           }
         });
-      });
-      
-      return quadrantItems;
-    },
-
-    // Get final quadrant for an HR item
-    getFinalQuadrant(hrCode) {
-      const counts = this.quadrantData[hrCode];
-      if (!counts) return null;
-      
-      const maxCount = Math.max(counts.q1, counts.q2, counts.q3, counts.q4);
-      if (maxCount === 0) return null;
-      
-      if (counts.q1 === maxCount) return 'q1';
-      if (counts.q2 === maxCount) return 'q2';
-      if (counts.q3 === maxCount) return 'q3';
-      return 'q4';
-    },
-
-    getCombinedFinalQuadrant(hrCode) {
-      const counts = this.combinedQuadrantData[hrCode];
-      if (!counts) return null;
-      
-      const maxCount = Math.max(counts.q1, counts.q2, counts.q3, counts.q4);
-      if (maxCount === 0) return null;
-      
-      if (counts.q1 === maxCount) return 'q1';
-      if (counts.q2 === maxCount) return 'q2';
-      if (counts.q3 === maxCount) return 'q3';
-      return 'q4';
-    },
-
-    getQuadrantItems(quadrant) {
-      const items = [];
-      for (const hrCode in this.quadrantData) {
-        if (this.getFinalQuadrant(hrCode) === quadrant) {
-          items.push(hrCode);
-        }
       }
-      return items.sort();
-    },
+    }
+  });
+  
+  return quadrantItems;
+},
 
-    getCombinedQuadrantItems(quadrant) {
-      const items = [];
-      for (const hrCode in this.combinedQuadrantData) {
-        if (this.getCombinedFinalQuadrant(hrCode) === quadrant) {
-          items.push(hrCode);
-        }
-      }
-      return items.sort();
-    },
+    // Also update the getFinalQuadrant methods to return the actual distribution:
+getFinalQuadrant(hrCode) {
+  const counts = this.quadrantData[hrCode];
+  if (!counts) return null;
+  
+  // Return which quadrant has the highest count (for sorting/display purposes)
+  const maxCount = Math.max(counts.q1, counts.q2, counts.q3, counts.q4);
+  if (maxCount === 0) return null;
+  
+  if (counts.q1 === maxCount) return 'q1';
+  if (counts.q2 === maxCount) return 'q2';
+  if (counts.q3 === maxCount) return 'q3';
+  return 'q4';
+},
 
-    getItemCount(hrCode) {
-      const counts = this.quadrantData[hrCode];
-      if (!counts) return 0;
-      return counts.q1 + counts.q2 + counts.q3 + counts.q4;
-    },
+getCombinedFinalQuadrant(hrCode) {
+  const counts = this.combinedQuadrantData[hrCode];
+  if (!counts) return null;
+  
+  const maxCount = Math.max(counts.q1, counts.q2, counts.q3, counts.q4);
+  if (maxCount === 0) return null;
+  
+  if (counts.q1 === maxCount) return 'q1';
+  if (counts.q2 === maxCount) return 'q2';
+  if (counts.q3 === maxCount) return 'q3';
+  return 'q4';
+},
 
-    getCombinedItemCount(hrCode) {
-      const counts = this.combinedQuadrantData[hrCode];
-      if (!counts) return 0;
-      return counts.q1 + counts.q2 + counts.q3 + counts.q4;
-    },
+getItemCount(hrCode, quadrant = null) {
+  const counts = this.quadrantData[hrCode];
+  if (!counts) return 0;
+  if (quadrant) {
+    // Return count for specific quadrant
+    return counts[quadrant] || 0;
+  }
+  // Return total count (sum of all quadrants)
+  return counts.q1 + counts.q2 + counts.q3 + counts.q4;
+},
+
+getCombinedItemCount(hrCode, quadrant = null) {
+  const counts = this.combinedQuadrantData[hrCode];
+  if (!counts) return 0;
+  if (quadrant) {
+    // Return count for specific quadrant
+    return counts[quadrant] || 0;
+  }
+  // Return total count (sum of all quadrants)
+  return counts.q1 + counts.q2 + counts.q3 + counts.q4;
+},
+
+getQuadrantItems(quadrant) {
+  const items = [];
+  for (const hrCode in this.quadrantData) {
+    const counts = this.quadrantData[hrCode];
+    if (counts && counts[quadrant] > 0) {
+      items.push(hrCode);
+    }
+  }
+  return items.sort();
+},
+
+getCombinedQuadrantItems(quadrant) {
+  const items = [];
+  for (const hrCode in this.combinedQuadrantData) {
+    const counts = this.combinedQuadrantData[hrCode];
+    if (counts && counts[quadrant] > 0) {
+      items.push(hrCode);
+    }
+  }
+  return items.sort();
+},
 
     getAllHRItems() {
       return Object.keys(this.quadrantData).sort();
@@ -4109,5 +4423,14 @@ export default {
 
 .export-btn:active {
   transform: translateY(0);
+}
+
+/* Add this to your existing button styles */
+.export-btn.bg-teal-600 {
+  background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+}
+
+.export-btn.bg-teal-600:hover {
+  background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
 }
 </style>

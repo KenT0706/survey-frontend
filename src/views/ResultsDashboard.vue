@@ -824,22 +824,23 @@
   <!-- Charts Grid -->
   <div class="charts-grid">
     <!-- Q1 Chart -->
-    <div class="chart-card">
+    <div class="chart-card" data-chart="q1">
       <h5>Q1: Fix & Improve Assessments</h5>
       <p class="chart-subtitle">High Importance, Low Implementation</p>
       <div class="chart-container">
         <div class="chart-y-axis">
           <span>Assessments</span>
         </div>
-        <div class="chart-content">
+             <div class="chart-content">
           <div class="chart-bars horizontal">
             <div 
               v-for="hrCode in getAllCombinedHRItems()" 
               :key="'q1-chart-' + hrCode"
               class="chart-bar-wrapper"
+              style="min-height: 24px;"
             >
               <div class="chart-bar-label">{{ hrCode }}</div>
-              <div class="chart-bar-bg">
+              <div class="chart-bar-bg" style="min-height: 24px;">
                 <div 
                   class="chart-bar q1-bar"
                   :style="{ width: getChartPercentage(combinedQuadrantData[hrCode]?.q1 || 0, getMaxQ1Value()) + '%' }"
@@ -855,22 +856,23 @@
     </div>
     
     <!-- Q2 Chart -->
-    <div class="chart-card">
+    <div class="chart-card" data-chart="q2">
       <h5>Q2: Maintain & Sustain Assessments</h5>
       <p class="chart-subtitle">High Importance, High Implementation</p>
       <div class="chart-container">
         <div class="chart-y-axis">
           <span>Assessments</span>
         </div>
-        <div class="chart-content">
+              <div class="chart-content">
           <div class="chart-bars horizontal">
             <div 
               v-for="hrCode in getAllCombinedHRItems()" 
               :key="'q2-chart-' + hrCode"
               class="chart-bar-wrapper"
+              style="min-height: 24px;"
             >
               <div class="chart-bar-label">{{ hrCode }}</div>
-              <div class="chart-bar-bg">
+              <div class="chart-bar-bg" style="min-height: 24px;">
                 <div 
                   class="chart-bar q2-bar"
                   :style="{ width: getChartPercentage(combinedQuadrantData[hrCode]?.q2 || 0, getMaxQ2Value()) + '%' }"
@@ -886,22 +888,23 @@
     </div>
     
     <!-- Q3 Chart -->
-    <div class="chart-card">
+    <div class="chart-card" data-chart="q3">
       <h5>Q3: Leave Alone Assessments</h5>
       <p class="chart-subtitle">Low Importance, Low Implementation</p>
       <div class="chart-container">
         <div class="chart-y-axis">
           <span>Assessments</span>
         </div>
-        <div class="chart-content">
+             <div class="chart-content">
           <div class="chart-bars horizontal">
             <div 
               v-for="hrCode in getAllCombinedHRItems()" 
               :key="'q3-chart-' + hrCode"
               class="chart-bar-wrapper"
+              style="min-height: 24px;"
             >
               <div class="chart-bar-label">{{ hrCode }}</div>
-              <div class="chart-bar-bg">
+              <div class="chart-bar-bg" style="min-height: 24px;">
                 <div 
                   class="chart-bar q3-bar"
                   :style="{ width: getChartPercentage(combinedQuadrantData[hrCode]?.q3 || 0, getMaxQ3Value()) + '%' }"
@@ -917,22 +920,23 @@
     </div>
     
     <!-- Q4 Chart -->
-    <div class="chart-card">
+    <div class="chart-card" data-chart="q4">
       <h5>Q4: Review to Maintain or Abolish Assessments</h5>
       <p class="chart-subtitle">Low Importance, High Implementation</p>
       <div class="chart-container">
         <div class="chart-y-axis">
           <span>Assessments</span>
         </div>
-        <div class="chart-content">
+             <div class="chart-content">
           <div class="chart-bars horizontal">
             <div 
               v-for="hrCode in getAllCombinedHRItems()" 
               :key="'q4-chart-' + hrCode"
               class="chart-bar-wrapper"
+              style="min-height: 24px;"
             >
               <div class="chart-bar-label">{{ hrCode }}</div>
-              <div class="chart-bar-bg">
+              <div class="chart-bar-bg" style="min-height: 24px;">
                 <div 
                   class="chart-bar q4-bar"
                   :style="{ width: getChartPercentage(combinedQuadrantData[hrCode]?.q4 || 0, getMaxQ4Value()) + '%' }"
@@ -1407,52 +1411,207 @@ export default {
   }
 },
 
-// Replace the exportQuadrantDistributionCharts method with this version
 async exportQuadrantDistributionCharts() {
   try {
-    // Show loading
-    alert('Generating PDF with ALL HR items... This may take a moment.');
+    alert('Generating PDF with quadrant charts... This may take a moment.');
     
     const doc = new jsPDF('landscape', 'pt', 'a4');
-    let pageNumber = 1;
     
     // Title page
     doc.setFontSize(24);
     doc.setTextColor(41, 128, 185);
-    doc.text('Quadrant Distribution Analysis', 20, 40);
+    doc.text('Quadrant Distribution Analysis - Complete Charts', 40, 50);
     
     doc.setFontSize(12);
     doc.setTextColor(100, 100, 100);
-    doc.text(`Generated on: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`, 20, 65);
-    doc.text(`Total HR Items: ${this.getAllCombinedHRItems().length}`, 20, 85);
-    doc.text(`Total Assessments: ${this.getOverallTotalAssessments()}`, 20, 105);
+    doc.text(`Generated on: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`, 40, 80);
+    doc.text(`Total HR Items: ${this.getAllCombinedHRItems().length}`, 40, 100);
+    doc.text(`Total Assessments: ${this.getOverallTotalAssessments()}`, 40, 120);
     
-    // Add summary
     doc.setFontSize(14);
     doc.setTextColor(30, 30, 30);
-    doc.text('Executive Summary', 20, 140);
+    doc.text('Chart Overview', 40, 160);
     
     doc.setFontSize(10);
-    const summaryText = [
-      'This report contains ALL HR items without scrollable sections:',
-      '• All HR items are displayed fully without truncation',
-      '• No scrollable sections - everything is visible',
-      '• Each quadrant chart shows ALL HR items',
-      '• Designed for complete analysis and printing'
+    const overviewText = [
+      'This PDF contains the following charts:',
+      '1. Q1: Fix & Improve Assessments Chart',
+      '2. Q2: Maintain & Sustain Assessments Chart',
+      '3. Q3: Leave Alone Assessments Chart',
+      '4. Q4: Review to Maintain or Abolish Assessments Chart',
+      '5. Total Assessments per HR Item Chart',
+      '',
+      'Each chart displays ALL HR items without scrollable sections.',
+      'The charts are rendered in full for easy viewing and printing.'
     ];
     
-    summaryText.forEach((line, index) => {
-      doc.text(line, 30, 165 + (index * 20));
+    overviewText.forEach((line, index) => {
+      doc.text(line, 50, 190 + (index * 18));
     });
     
-    // Start creating charts from scratch with ALL items
-    this.createExpandedChartsForPDF(doc);
+    // Get all chart cards
+    const chartsSection = this.$el.querySelector('.charts-section');
+    if (!chartsSection) {
+      throw new Error('Charts section not found');
+    }
     
-    // Save PDF
-    const fileName = `Complete_Quadrant_Analysis_All_Items_${new Date().toISOString().split('T')[0]}.pdf`;
+    const chartCards = chartsSection.querySelectorAll('.chart-card');
+    
+    for (let i = 0; i < chartCards.length; i++) {
+      if (i > 0) {
+        doc.addPage();
+      }
+      
+      const chartCard = chartCards[i];
+      
+      // Temporarily adjust styles for PDF capture
+      const originalStyles = {
+        overflow: chartCard.style.overflow,
+        maxHeight: chartCard.style.maxHeight,
+        minHeight: chartCard.style.minHeight,
+        height: chartCard.style.height
+      };
+      
+      // Remove scrolling constraints for capture
+      chartCard.style.overflow = 'visible';
+      chartCard.style.maxHeight = 'none';
+      chartCard.style.minHeight = 'auto';
+      chartCard.style.height = 'auto';
+      
+      // Also adjust the chart-container within the card
+      const chartContainer = chartCard.querySelector('.chart-container');
+      if (chartContainer) {
+        chartContainer.style.maxHeight = 'none';
+        chartContainer.style.minHeight = 'auto';
+        chartContainer.style.height = 'auto';
+        chartContainer.style.overflow = 'visible';
+      }
+      
+      // Adjust the chart-content for full visibility
+      const chartContent = chartCard.querySelector('.chart-content');
+      if (chartContent) {
+        chartContent.style.overflow = 'visible';
+        chartContent.style.maxHeight = 'none';
+      }
+      
+      // Create a temporary container to capture the expanded chart
+      const tempContainer = document.createElement('div');
+      tempContainer.style.position = 'fixed';
+      tempContainer.style.left = '-9999px';
+      tempContainer.style.top = '0';
+      tempContainer.style.width = '800px'; // Fixed width for PDF
+      tempContainer.style.backgroundColor = '#f8fafc';
+      tempContainer.style.padding = '20px';
+      tempContainer.style.borderRadius = '8px';
+      tempContainer.style.border = '1px solid #e5e7eb';
+      
+      // Clone the chart card
+      const clonedChart = chartCard.cloneNode(true);
+      
+      // Adjust cloned chart styles for PDF
+      clonedChart.style.width = '100%';
+      clonedChart.style.height = 'auto';
+      clonedChart.style.margin = '0';
+      clonedChart.style.padding = '0';
+      clonedChart.style.overflow = 'visible';
+      
+      // Expand all bars for visibility
+      const chartBars = clonedChart.querySelectorAll('.chart-bar-wrapper');
+      chartBars.forEach(barWrapper => {
+        barWrapper.style.minHeight = '24px';
+        barWrapper.style.height = 'auto';
+        const chartBar = barWrapper.querySelector('.chart-bar-bg');
+        if (chartBar) {
+          chartBar.style.minHeight = '24px';
+          chartBar.style.height = 'auto';
+        }
+      });
+      
+      // Add to temp container
+      tempContainer.appendChild(clonedChart);
+      document.body.appendChild(tempContainer);
+      
+      try {
+        // Capture the chart
+        const canvas = await html2canvas(tempContainer, {
+          scale: 2,
+          backgroundColor: '#ffffff',
+          useCORS: true,
+          logging: false,
+          allowTaint: true,
+          width: 800,
+          height: tempContainer.scrollHeight,
+          windowWidth: 800
+        });
+        
+        // Add to PDF
+        const imgData = canvas.toDataURL('image/png');
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        
+        // Calculate dimensions
+        const imgWidth = pageWidth - 80; // Margins
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        
+        // Add chart title
+        doc.setFontSize(16);
+        doc.setTextColor(41, 128, 185);
+        const chartTitle = clonedChart.querySelector('h5')?.textContent || `Chart ${i + 1}`;
+        doc.text(chartTitle, 40, 30);
+        
+        const chartSubtitle = clonedChart.querySelector('.chart-subtitle')?.textContent;
+        if (chartSubtitle) {
+          doc.setFontSize(10);
+          doc.setTextColor(100, 100, 100);
+          doc.text(chartSubtitle, 40, 50);
+        }
+        
+        // Add the image
+        if (imgHeight > pageHeight - 100) {
+          // If image is too tall, scale it down
+          const scaleFactor = (pageHeight - 100) / imgHeight;
+          const scaledWidth = imgWidth * scaleFactor;
+          const scaledHeight = imgHeight * scaleFactor;
+          doc.addImage(imgData, 'PNG', (pageWidth - scaledWidth) / 2, 60, scaledWidth, scaledHeight);
+        } else {
+          doc.addImage(imgData, 'PNG', 40, 60, imgWidth, imgHeight);
+        }
+        
+      } catch (error) {
+        console.error('Error capturing chart:', error);
+        // Fallback: Add a text description
+        doc.setFontSize(12);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Chart ${i + 1} could not be rendered. Please check the console for errors.`, 40, 100);
+      }
+      
+      // Cleanup
+      document.body.removeChild(tempContainer);
+      
+      // Restore original styles
+      chartCard.style.overflow = originalStyles.overflow;
+      chartCard.style.maxHeight = originalStyles.maxHeight;
+      chartCard.style.minHeight = originalStyles.minHeight;
+      chartCard.style.height = originalStyles.height;
+      
+      if (chartContainer) {
+        chartContainer.style.maxHeight = 'none';
+        chartContainer.style.minHeight = 'auto';
+        chartContainer.style.height = 'auto';
+        chartContainer.style.overflow = 'visible';
+      }
+      
+      if (chartContent) {
+        chartContent.style.overflow = 'visible';
+        chartContent.style.maxHeight = 'none';
+      }
+    }
+    
+    // Save the PDF
+    const fileName = `Quadrant_Charts_Complete_${new Date().toISOString().split('T')[0]}.pdf`;
     doc.save(fileName);
     
-    alert('Complete quadrant analysis with ALL HR items exported successfully as PDF!');
+    alert('Quadrant charts exported successfully as PDF!');
     
   } catch (error) {
     console.error('Error exporting quadrant distribution charts:', error);

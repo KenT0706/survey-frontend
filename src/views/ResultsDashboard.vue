@@ -1900,72 +1900,98 @@ createExpandedChartsForPDF(doc) {
       }
     },
 
-    // 6. Export Quadrant Breakdown (for individual survey tabs)
-    exportQuadrantBreakdown() {
-      try {
-        const data = [];
-        const headers = [
-          'HR Item',
-          'Q1 Count',
-          'Q2 Count',
-          'Q3 Count',
-          'Q4 Count',
-          'Total Assessments',
-          'Q1 Percentage',
-          'Q2 Percentage',
-          'Q3 Percentage',
-          'Q4 Percentage'
-        ];
-        
-        data.push(headers);
-        
-        const allHRItems = this.getAllHRItems();
-        allHRItems.forEach(hrCode => {
-          const counts = this.quadrantData[hrCode] || { q1: 0, q2: 0, q3: 0, q4: 0 };
-          const total = this.getTotalAssessments(hrCode);
-          
-          data.push([
-            hrCode,
-            counts.q1 || 0,
-            counts.q2 || 0,
-            counts.q3 || 0,
-            counts.q4 || 0,
-            total,
-            total > 0 ? ((counts.q1 || 0) / total * 100).toFixed(2) + '%' : '0%',
-            total > 0 ? ((counts.q2 || 0) / total * 100).toFixed(2) + '%' : '0%',
-            total > 0 ? ((counts.q3 || 0) / total * 100).toFixed(2) + '%' : '0%',
-            total > 0 ? ((counts.q4 || 0) / total * 100).toFixed(2) + '%' : '0%'
-          ]);
-        });
-        
-        this.exportToExcel(data, `${this.currentTabLabel}_Quadrant_Breakdown`);
-        
-      } catch (error) {
-        console.error('Error exporting quadrant breakdown:', error);
-        alert('Error exporting quadrant breakdown: ' + error.message);
-      }
-    },
+   // 6. Export Quadrant Breakdown (for individual survey tabs)
+exportQuadrantBreakdown() {
+  try {
+    const data = [];
+    const headers = [
+      'HR Item',
+      'Q1 Count',
+      'Q2 Count',
+      'Q3 Count',
+      'Q4 Count',
+      'Total Assessments',
+      'Q1 Percentage',
+      'Q2 Percentage',
+      'Q3 Percentage',
+      'Q4 Percentage'
+    ];
+    
+    data.push(headers);
+    
+    const allHRItems = this.getAllHRItems();
+    allHRItems.forEach(hrCode => {
+      const counts = this.quadrantData[hrCode] || { q1: 0, q2: 0, q3: 0, q4: 0 };
+      const total = this.getTotalAssessments(hrCode);
+      
+      data.push([
+        hrCode,
+        counts.q1 || 0,
+        counts.q2 || 0,
+        counts.q3 || 0,
+        counts.q4 || 0,
+        total,
+        total > 0 ? ((counts.q1 || 0) / total * 100).toFixed(2) + '%' : '0%',
+        total > 0 ? ((counts.q2 || 0) / total * 100).toFixed(2) + '%' : '0%',
+        total > 0 ? ((counts.q3 || 0) / total * 100).toFixed(2) + '%' : '0%',
+        total > 0 ? ((counts.q4 || 0) / total * 100).toFixed(2) + '%' : '0%'
+      ]);
+    });
+    
+    // FIX: Truncate sheet name to 31 characters
+    const tabLabel = this.currentTabLabel;
+    let sheetName = `${tabLabel}_Quadrant_Breakdown`;
+    
+    // Truncate to 31 characters for Excel compatibility
+    if (sheetName.length > 31) {
+      // Keep first part and ensure we don't exceed 31 chars
+      const prefix = tabLabel.substring(0, Math.min(20, tabLabel.length));
+      sheetName = `${prefix}_Quadrant_Breakdown`.substring(0, 31);
+    }
+    
+    this.exportToExcel(data, sheetName);
+    
+  } catch (error) {
+    console.error('Error exporting quadrant breakdown:', error);
+    alert('Error exporting quadrant breakdown: ' + error.message);
+  }
+},
 
-    // Helper method to export data to Excel
-    exportToExcel(data, sheetName) {
-      const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.aoa_to_sheet(data);
-      XLSX.utils.book_append_sheet(wb, ws, sheetName);
-      
-      // Auto-size columns
-      const wscols = [];
-      if (data.length > 0) {
-        for (let i = 0; i < data[0].length; i++) {
-          wscols.push({ wch: 20 });
-        }
-        ws['!cols'] = wscols;
-      }
-      
-      const fileName = `${sheetName}_${new Date().toISOString().split('T')[0]}.xlsx`;
-      XLSX.writeFile(wb, fileName);
-      
-      alert(`${sheetName} exported successfully!`);
-    },
+   // Helper method to export data to Excel
+exportToExcel(data, sheetName) {
+  // FIX: Clean and truncate sheet name to 31 characters
+  let cleanSheetName = sheetName
+    .replace(/[\\/*?:\[\]]/g, '') // Remove invalid Excel characters
+    .substring(0, 31); // Truncate to 31 characters
+  
+  // If sheet name ends with . (Excel doesn't allow ending with period)
+  if (cleanSheetName.endsWith('.')) {
+    cleanSheetName = cleanSheetName.slice(0, -1);
+  }
+  
+  // If sheet name is empty after cleaning, use a default
+  if (!cleanSheetName) {
+    cleanSheetName = 'Sheet1';
+  }
+  
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  XLSX.utils.book_append_sheet(wb, ws, cleanSheetName);
+  
+  // Auto-size columns
+  const wscols = [];
+  if (data.length > 0) {
+    for (let i = 0; i < data[0].length; i++) {
+      wscols.push({ wch: 20 });
+    }
+    ws['!cols'] = wscols;
+  }
+  
+  const fileName = `${cleanSheetName}_${new Date().toISOString().split('T')[0]}.xlsx`;
+  XLSX.writeFile(wb, fileName);
+  
+  alert(`${cleanSheetName} exported successfully!`);
+},
 
 
 
